@@ -18,7 +18,7 @@ function project_clickItem(itemEle) {
         g.fetch('./file/' + relPath).then(res => {
             if (res.startsWith('diff:')) {
                 res = res.substring(5);
-                const data =JSON.parse(res);
+                const data = JSON.parse(res);
                 g.root.showCompare = true;
                 const diffModel = g.root.compareEle._editor.getModel();
                 if (diffModel) {
@@ -28,9 +28,7 @@ function project_clickItem(itemEle) {
             } else {
                 g.root.showCompare = false;
                 g.root.currentFileContent = res;
-                if (relPath.endsWith('.go')) {
-                    g.root.currentFileLanguage = 'go';
-                }
+                g.root.currentFileLanguage = relPath.endsWith('.go') ? 'go' : '';
             }
         }).catch((err) => {
             console.error(err);
@@ -49,6 +47,7 @@ function search_doSearch() {
     if (!text) {
         return;
     }
+    root_showInfo(`search: ${text}`)
     const flags = [];
     if (!g.root.searchCaseBtnEle.selected) {
         flags.push('-i')
@@ -68,7 +67,7 @@ function search_doSearch() {
             const startIdx = match_index[0];
             let line = line_text;
             if (startIdx > 25) {
-                line = `...${line_text.substring(startIdx-20)}`;
+                line = `...${line_text.substring(startIdx - 20)}`;
             }
             const key = `${path.replaceAll('/', '%2f')}/L${line_number}: ${line.replaceAll('/', '%2f')}`;
             results.push(key);
@@ -95,7 +94,7 @@ function search_clickItem(ele) {
             }
             g.root.showCompare = false;
             setTimeout(() => {
-                g.root.editorEle.selection = [line_number, match_index[0]+1, line_number, match_index[1]+1];
+                g.root.editorEle.selection = [line_number, match_index[0] + 1, line_number, match_index[1] + 1];
                 g.root.editorEle.focusLine = line_number;
             }, 100);
         }).catch((err) => {

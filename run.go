@@ -7,12 +7,13 @@ import (
 	. "github.com/lincaiyong/gui"
 )
 
-func Run() {
+func Run(f func(group *gin.RouterGroup)) {
 	common.StartServer(
 		"codeedgeapp",
 		"v1.0.1",
 		"",
 		func(envs []string, r *gin.RouterGroup) error {
+			f(r)
 			r.GET("/res/*filepath", HandleRes())
 			r.GET("/", handlePage)
 			return nil
