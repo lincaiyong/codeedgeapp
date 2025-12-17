@@ -3,6 +3,7 @@ module example
 go 1.25.4
 
 replace github.com/lincaiyong/codeedgeapp v1.0.1 => ..
+replace github.com/lincaiyong/gui v1.0.12 => ../../gui
 
 require github.com/lincaiyong/codeedgeapp v1.0.1
 

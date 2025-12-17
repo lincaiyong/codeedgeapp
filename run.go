@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/daemon/common"
 	. "github.com/lincaiyong/gui"
+	"net/http"
+	"os"
 )
 
 func Run(f func(group *gin.RouterGroup)) {
@@ -16,6 +18,12 @@ func Run(f func(group *gin.RouterGroup)) {
 			f(r)
 			r.GET("/res/*filepath", HandleRes())
 			r.GET("/", handlePage)
+			r.GET("/status", func(c *gin.Context) {
+				c.JSON(http.StatusOK, gin.H{
+					"status": "ok",
+					"pid":    os.Getpid(),
+				})
+			})
 			return nil
 		},
 	)

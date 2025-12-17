@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/codeedgeapp"
 	"github.com/lincaiyong/log"
@@ -53,6 +54,26 @@ func main() {
 			// common.RunCommand(c.Request.Context(), dir, "rg", args...)
 			// TODO
 			c.Status(http.StatusOK)
+		})
+		r.GET("/fields", func(c *gin.Context) {
+			fields := []string{"id", "name", "age", "height", "weight", "birthday", "gender", "country"}
+			c.JSON(http.StatusOK, fields)
+		})
+		r.GET("/data", func(c *gin.Context) {
+			data := make([][]string, 0)
+			for i := 0; i < 10; i++ {
+				data = append(data, []string{
+					fmt.Sprintf("%d", i+1),
+					"andy",
+					"12",
+					"170",
+					"120",
+					"1992-02-19",
+					"male",
+					"china",
+				})
+			}
+			c.JSON(http.StatusOK, data)
 		})
 	})
 }

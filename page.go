@@ -3,7 +3,6 @@ package codeedgeapp
 import (
 	"embed"
 	_ "embed"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	. "github.com/lincaiyong/gui"
 )
@@ -34,17 +33,13 @@ func handlePage(c *gin.Context) {
 		)),
 		Named("bottomBar", BottomBar(NewOpt().Y("parent.h-.h").H("24").BgColor(ColorGray247).BorderColor(ColorGray235).BorderTop(1))),
 	)
-	sample := "xxx" // tryGetSampleFromParam(c)
-	//if sample == "" {
-	//	return
-	//}
 	// view
 	root.SetProperty("leftView", "''")
 	root.SetProperty("bottomView", "''")
 	root.SetProperty("rightView", "''")
 	// project
 	root.SetProperty("projectFiles", "[]")
-	root.SetProperty("projectName", fmt.Sprintf("'%s'", sample))
+	root.SetProperty("projectName", "'?'")
 	// search
 	root.SetProperty("searchInputText", "''")
 	root.SetProperty("searchResults", "[]")
@@ -63,5 +58,5 @@ func handlePage(c *gin.Context) {
 		b, _ := pageJsFS.ReadFile("js/" + item.Name())
 		jsCode = append(jsCode, string(b))
 	}
-	HandlePage(c, fmt.Sprintf("idor/%s", c.Param("id")), root, jsCode...)
+	HandlePage(c, "CodeEdge App", root, jsCode...)
 }
