@@ -2,11 +2,12 @@ module codeedgeapp
 
 go 1.25.1
 
+replace github.com/lincaiyong/gui v1.0.12 => ../gui
+
 require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/lincaiyong/daemon v1.0.33
 	github.com/lincaiyong/gui v1.0.12
-	github.com/lincaiyong/larkbase v1.0.30
 )
 
 require (

@@ -8,7 +8,7 @@ func DataView() *Element {
 			Text(NewOpt().X(".y+4").Y("parent.h/2-.h/2").H("20").FontWeight("500"), "'Data'"),
 		),
 		Div(NewOpt().Y("prev.y2"),
-			Named("data", Table(NewTableOpt().OnError("data_onError").OnInfo("data_onInfo"))),
+			Named("data", Table(NewTableOpt().OnError("data_onError").OnInfo("data_onInfo").OnRefresh("data_onRefresh"))),
 		),
 	)
 }

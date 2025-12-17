@@ -55,11 +55,8 @@ func main() {
 			// TODO
 			c.Status(http.StatusOK)
 		})
-		r.GET("/fields", func(c *gin.Context) {
-			fields := []string{"id", "name", "age", "height", "weight", "birthday", "gender", "country"}
-			c.JSON(http.StatusOK, fields)
-		})
 		r.GET("/data", func(c *gin.Context) {
+			fields := []string{"id", "name", "age", "height", "weight", "birthday", "gender", "country"}
 			data := make([][]string, 0)
 			for i := 0; i < 10; i++ {
 				data = append(data, []string{
@@ -73,7 +70,10 @@ func main() {
 					"china",
 				})
 			}
-			c.JSON(http.StatusOK, data)
+			c.JSON(http.StatusOK, gin.H{
+				"data":   data,
+				"fields": fields,
+			})
 		})
 	})
 }

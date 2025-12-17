@@ -3,8 +3,10 @@ package codeedgeapp
 import (
 	"embed"
 	_ "embed"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	. "github.com/lincaiyong/gui"
+	"os"
 )
 
 //go:embed js/*.js
@@ -58,5 +60,5 @@ func handlePage(c *gin.Context) {
 		b, _ := pageJsFS.ReadFile("js/" + item.Name())
 		jsCode = append(jsCode, string(b))
 	}
-	HandlePage(c, "CodeEdge App", root, jsCode...)
+	HandlePage(c, fmt.Sprintf("CodeEdge App (%d)", os.Getpid()), root, jsCode...)
 }
