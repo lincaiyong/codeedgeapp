@@ -53,6 +53,7 @@ func handlePage(c *gin.Context) {
 	root.SetProperty("currentFileLanguage", "'go'")
 	//
 	root.SetProperty("message", "''")
+	root.SetProperty("noteContent", "'@a.b:10'")
 	// js
 	var jsCode []string
 	items, _ := pageJsFS.ReadDir("js")

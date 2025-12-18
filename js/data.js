@@ -15,3 +15,9 @@ function data_onRefresh(tableEle) {
         console.error(e);
     });
 }
+
+function data_onOpen(tableEle, id) {
+    console.log(tableEle, id);
+    root_openProject('??');
+    root_openNote('@data.go:10\n---\n---');
+}

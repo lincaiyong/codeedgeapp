@@ -1,9 +1,9 @@
 function root_onCreated() {
     setTimeout(function () {
-        root_showSucceed("welcome");
+        root_showInfo("welcome");
         g.root.bottomView = 'data';
-        g.root.dataEle.fields = ['id', 'name', 'age', 'height'];
-        g.root.dataEle.data = [['1', 'andy', '12', '189'], ['2', 'bob', '20', '177']];
+        g.root.dataEle.fields = ['id', 'project', 'note', 'patch'];
+        g.root.dataEle.data = [['1', 'xx', '@data.go:10\n', ''], ['2', 'xx', '@run.go:20', '']];
         g.fetch('./files').then(resp => {
             g.root.projectFiles = JSON.parse(resp);
         }).catch(err => {
@@ -22,12 +22,15 @@ function root_onCreated() {
     }), 1000);
 }
 
-function root_showWarn(msg) {
-    g.root.message = `⚠️ ${msg}`;
+function root_onUpdated(ele, k) {
+    if (k === 'message') {
+
+    }
+
 }
 
-function root_showSucceed(msg) {
-    g.root.message = `✅ ${msg}`;
+function root_showWarn(msg) {
+    g.root.message = `⚠️ ${msg}`;
 }
 
 function root_showError(msg) {
@@ -35,5 +38,14 @@ function root_showError(msg) {
 }
 
 function root_showInfo(msg) {
-    g.root.message = `${msg}`;
+    g.root.message = `✅ ${msg}`;
+}
+
+function root_openProject(key) {
+    g.root.leftView = 'project';
+}
+
+function root_openNote(text) {
+    g.root.rightView = 'note';
+    g.root.noteContent = text;
 }
