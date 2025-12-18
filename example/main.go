@@ -85,12 +85,12 @@ func main() {
 		})
 		type Record struct {
 			larkbase.Meta `lark:"https://bytedance.larkoffice.com/base/P8QubLDkzabEJNsaNbacfha0nCd?table=tblUgfvHyAmuS3zx"`
-			Id            larkbase.NumberField `lark:"id"`
-			Sop           larkbase.TextField   `lark:"sop"`
-			Note          larkbase.TextField   `lark:"note"`
-			VulnCode      larkbase.TextField   `lark:"vuln_code"`
-			VendorCode    larkbase.TextField   `lark:"vendor_code"`
-			SafeCode      larkbase.TextField   `lark:"safe_code"`
+			Id            larkbase.NumberField       `lark:"id"`
+			Sop           larkbase.TextField         `lark:"sop"`
+			Note          larkbase.TextField         `lark:"note"`
+			VulnCode      larkbase.TextField         `lark:"vuln_code"`
+			VendorCode    larkbase.TextField         `lark:"vendor_code"`
+			Version       larkbase.SingleSelectField `lark:"version"`
 		}
 		r.POST("/note/", func(c *gin.Context) {
 			var data struct {
@@ -136,7 +136,7 @@ func main() {
 				return
 			}
 			var records []*Record
-			err = conn.FindAll(&records, larkbase.NewFindOption(conn.FilterAnd(conn.Condition().Id.IsLess(50))))
+			err = conn.FindAll(&records, larkbase.NewFindOption(conn.FilterAnd(conn.Condition().Version.Is("v1"))))
 			if err != nil {
 				log.ErrorLog("fail to find records: %v", err)
 				c.String(http.StatusInternalServerError, err.Error())
