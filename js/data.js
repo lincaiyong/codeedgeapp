@@ -6,18 +6,18 @@ function data_onInfo(msg) {
     root_showInfo(msg);
 }
 
-function data_onRefresh(tableEle) {
+function data_onRefresh(dataEle) {
     g.fetch('./data').then(resp => {
         const {fields, data} = JSON.parse(resp);
-        tableEle.fields = fields;
-        tableEle.data = data;
+        dataEle.fields = fields;
+        dataEle.data = data;
     }).catch(e => {
         console.error(e);
     });
 }
 
-function data_onOpen(tableEle, id) {
-    console.log(tableEle, id);
+function data_onOpen(dataEle, id) {
+    console.log(dataEle, id);
     root_openProject('??');
-    root_openNote('@data.go:10\n---\n---');
+    root_openNote(dataEle.dataByKey[id]?.note);
 }

@@ -12,7 +12,7 @@ import (
 var pageJsFS embed.FS
 
 func handlePage(c *gin.Context) {
-	root := Div(NewOpt().OnCreated("root_onCreated"),
+	root := Div(NewOpt().OnCreated("root_onCreated").OnUpdated("root_onUpdated"),
 		Named("bottomBarElse", Div(NewOpt().H("parent.h-next.h"),
 			Named("leftBar", LeftBar(NewOpt().W("33").BgColor(ColorGray247).BorderRight(1).BorderColor(ColorGray235))),
 			Named("leftRightBarElse", Div(NewOpt().X("prev.x2").W("parent.w-prev.w-next.w"),
@@ -54,6 +54,7 @@ func handlePage(c *gin.Context) {
 	//
 	root.SetProperty("message", "''")
 	root.SetProperty("noteContent", "''")
+	root.SetProperty("data", "{}")
 	// js
 	var jsCode []string
 	items, _ := pageJsFS.ReadDir("js")

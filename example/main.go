@@ -7,11 +7,10 @@ import (
 	"github.com/lincaiyong/larkbase"
 	"github.com/lincaiyong/log"
 	"github.com/lincaiyong/uniapi/service/monica"
-	"io/fs"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 func main() {
@@ -47,25 +46,26 @@ func main() {
 			c.Writer.Flush()
 		})
 		r.GET("/files", func(c *gin.Context) {
-			result := make([]string, 0)
-			err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
-				if err != nil {
-					return err
-				}
-				if d.IsDir() && strings.HasPrefix(d.Name(), ".") {
-					return filepath.SkipDir
-				}
-				if !d.IsDir() {
-					result = append(result, path[len(dir)+1:])
-				}
-				return nil
-			})
+			url := fmt.Sprintf("https://codeedge.cc/testeval/files?project=%s&vendor=%s", c.Query("project"), c.Query("vendor"))
+			resp, err := http.DefaultClient.Get(url)
 			if err != nil {
-				log.ErrorLog("fail to walk dir: %v", err)
+				log.ErrorLog("fail to request: %v", err)
 				c.String(http.StatusInternalServerError, err.Error())
 				return
 			}
-			c.JSON(http.StatusOK, result)
+			if resp.StatusCode != http.StatusOK {
+				log.ErrorLog("fail to request: code=%d", resp.StatusCode)
+				c.String(http.StatusInternalServerError, "fail to request")
+				return
+			}
+			defer func() { _ = resp.Body.Close() }()
+			b, err := io.ReadAll(resp.Body)
+			if err != nil {
+				log.ErrorLog("fail to read body: %v", err)
+				c.String(http.StatusInternalServerError, "fail to read body")
+				return
+			}
+			c.String(http.StatusOK, string(b))
 		})
 		r.GET("/file/*filepath", func(c *gin.Context) {
 			filePath := c.Param("filepath")
