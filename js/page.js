@@ -50,7 +50,7 @@ function root_openProject(project, vendor) {
     g.root.currentFileLanguage = '';
     g.root.vendor = vendor;
     g.root.leftView = 'project';
-    g.fetch(`./files?project=${project}&vendor=${vendor}`).then(resp => {
+    g.fetch(`./files/?project=${project}&vendor=${vendor}`).then(resp => {
         g.root.projectFiles = JSON.parse(resp);
     });
 }

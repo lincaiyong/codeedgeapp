@@ -31,7 +31,7 @@ func handleSearch(c *gin.Context) {
 		c.String(http.StatusBadRequest, "text is required")
 		return
 	}
-	zipFilePath := filepath.Join("samples/zip", project)
+	zipFilePath := filepath.Join("zip", project+".zip")
 	mod, err := modifiedTime(zipFilePath)
 	if err != nil {
 		log.ErrorLog("fail to get modified time: %v", err)
@@ -45,7 +45,7 @@ func handleSearch(c *gin.Context) {
 	projectToSearch := []string{project}
 	if vendor != "" {
 		for _, item := range strings.Split(vendor, ",") {
-			zipFilePath = filepath.Join("samples/zip", item)
+			zipFilePath = filepath.Join("zip", item+".zip")
 			var itemMod time.Time
 			itemMod, err = modifiedTime(zipFilePath)
 			if err != nil {
@@ -84,7 +84,7 @@ func handleSearch(c *gin.Context) {
 }
 
 func searchProject(c *gin.Context, project, text, flag string) ([]*RipgrepItem, error) {
-	workDir, err := unzipSample(filepath.Join("samples/zip", project), project)
+	workDir, err := unzipSample(filepath.Join("zip", project+".zip"), project)
 	if err != nil {
 		log.ErrorLog("fail to unzip sample: %v", err)
 		c.String(http.StatusInternalServerError, "fail to unzip sample")

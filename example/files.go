@@ -18,7 +18,7 @@ func handleFiles(c *gin.Context) {
 		return
 	}
 
-	filePath := filepath.Join("samples/zip", project)
+	filePath := filepath.Join("zip", project+".zip")
 	mod, err := modifiedTime(filePath)
 	if err != nil {
 		log.ErrorLog("fail to get modified time: %v", err)
@@ -37,7 +37,7 @@ func handleFiles(c *gin.Context) {
 			return
 		}
 		for _, item := range strings.Split(vendor, ",") {
-			filePath = filepath.Join("samples/zip", item)
+			filePath = filepath.Join("zip", item+".zip")
 			var itemMod time.Time
 			itemMod, err = modifiedTime(filePath)
 			if err != nil {
@@ -58,7 +58,7 @@ func handleFiles(c *gin.Context) {
 
 	ret := make([]string, 0)
 	for _, k := range zipsToRead {
-		path := filepath.Join("samples/zip", k)
+		path := filepath.Join("zip", k+".zip")
 		var tmp []string
 		tmp, err = readZipFiles(path)
 		if err != nil {
@@ -97,7 +97,7 @@ func handleFile(c *gin.Context) {
 		c.String(http.StatusBadRequest, "project is invalid")
 		return
 	}
-	zipFilePath := filepath.Join("samples/zip", project)
+	zipFilePath := filepath.Join("zip", project+".zip")
 	mod, err := modifiedTime(zipFilePath)
 	if err != nil {
 		log.ErrorLog("fail to get modified time: %v", err)

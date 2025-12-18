@@ -3,51 +3,14 @@ package main
 import (
 	"archive/zip"
 	"context"
-	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/daemon/common"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 )
-
-func tryGetSampleFromParam(c *gin.Context) string {
-	id := c.Param("id")
-	sample, _ := getIdorSample(id)
-	if sample == "" {
-		c.String(http.StatusNotFound, "sample not found")
-		return ""
-	}
-	return sample
-}
-
-func loadAllIdor() (map[string]string, error) {
-	b, err := os.ReadFile("samples/all.json")
-	if err != nil {
-		return nil, err
-	}
-	var ret map[string]string
-	err = json.Unmarshal(b, &ret)
-	if err != nil {
-		return nil, err
-	}
-	return ret, nil
-}
-
-func getIdorSample(id string) (string, error) {
-	all, err := loadAllIdor()
-	if err != nil {
-		return "", err
-	}
-	if ret, ok := all[id]; ok {
-		return ret, nil
-	}
-	return "", fmt.Errorf("sample not found: %s", id)
-}
 
 func readZipFiles(zipPath string) ([]string, error) {
 	reader, err := zip.OpenReader(zipPath)
@@ -60,7 +23,7 @@ func readZipFiles(zipPath string) ([]string, error) {
 		if file.FileInfo().IsDir() {
 			continue
 		}
-		files = append(files, file.Name[1:])
+		files = append(files, file.Name)
 	}
 	return files, nil
 }
@@ -73,7 +36,7 @@ func readZipFile(zipPath, fileName string) ([]byte, error) {
 	defer func() { _ = reader.Close() }()
 	var file *zip.File
 	for _, f := range reader.File {
-		name := f.Name[1:]
+		name := f.Name
 		if name == fileName {
 			file = f
 			break
