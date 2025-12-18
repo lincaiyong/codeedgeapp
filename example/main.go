@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/codeedgeapp"
+	"github.com/lincaiyong/larkbase"
 	"github.com/lincaiyong/log"
 	"github.com/lincaiyong/uniapi/service/monica"
 	"io/fs"
@@ -16,7 +17,7 @@ import (
 func main() {
 	dir, _ := filepath.Abs("..")
 	codeedgeapp.Run(func(r *gin.RouterGroup) {
-		r.POST("/test", func(c *gin.Context) {
+		r.POST("/chat", func(c *gin.Context) {
 			var req struct {
 				Data string `json:"data"`
 			}
@@ -35,6 +36,7 @@ func main() {
 
 			monica.Init(os.Getenv("MONICA_SESSION_ID"))
 			_, err = monica.ChatCompletion(c.Request.Context(), monica.ModelGPT41Mini, req.Data, func(s string) {
+				fmt.Print(s)
 				_, _ = fmt.Fprintf(c.Writer, "data: %s\n\n", s)
 				c.Writer.Flush()
 			})
@@ -85,18 +87,33 @@ func main() {
 			c.Status(http.StatusOK)
 		})
 		r.GET("/data", func(c *gin.Context) {
-			fields := []string{"id", "name", "age", "height", "weight", "birthday", "gender", "country"}
+			type Record struct {
+				larkbase.Meta `lark:"https://bytedance.larkoffice.com/base/P8QubLDkzabEJNsaNbacfha0nCd?table=tblUgfvHyAmuS3zx"`
+				Id            larkbase.NumberField `lark:"id"`
+				Sop           larkbase.TextField   `lark:"sop"`
+				VulnCode      larkbase.TextField   `lark:"vuln_code"`
+				SafeCode      larkbase.TextField   `lark:"safe_code"`
+			}
+			conn, err := larkbase.Connect[Record](c.Request.Context(), os.Getenv("LARK_APP_ID"), os.Getenv("LARK_APP_SECRET"))
+			if err != nil {
+				log.ErrorLog("fail to connect: %v", err)
+				c.String(http.StatusInternalServerError, err.Error())
+				return
+			}
+			var records []*Record
+			err = conn.FindAll(&records, larkbase.NewFindOption(conn.FilterAnd(conn.Condition().Id.IsLess(50))))
+			if err != nil {
+				log.ErrorLog("fail to find records: %v", err)
+				c.String(http.StatusInternalServerError, err.Error())
+				return
+			}
+			fields := []string{"id", "project", "note"}
 			data := make([][]string, 0)
-			for i := 0; i < 10; i++ {
+			for _, record := range records {
 				data = append(data, []string{
-					fmt.Sprintf("%d", i+1),
-					"andy",
-					"12",
-					"170",
-					"120",
-					"1992-02-19",
-					"male",
-					"china",
+					record.Id.StringValue(),
+					record.VulnCode.StringValue(),
+					record.Sop.StringValue(),
 				})
 			}
 			c.JSON(http.StatusOK, gin.H{
