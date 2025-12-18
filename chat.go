@@ -10,7 +10,7 @@ func ChatView() *Element {
 			Button(NewButtonOpt().X("parent.w-parent.h+.y").Y("parent.h/2-.h/2").Svg(SvgHide).OnClick("() => g.root.rightView = ''")),
 		),
 		Div(NewOpt().Y("prev.y2").H("parent.h-.y").BgColor("'white'"),
-			Named("chat", Chat(NewChatOpt().EventUrl("'/chat'"))),
+			Named("chat", Chat(NewChatOpt().EventUrl("'./chat'"))),
 		),
 	)
 }

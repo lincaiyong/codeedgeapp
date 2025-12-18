@@ -39,9 +39,12 @@ func handlePage(c *gin.Context) {
 	root.SetProperty("leftView", "''")
 	root.SetProperty("bottomView", "''")
 	root.SetProperty("rightView", "''")
+	root.SetProperty("showSearch", "false")
 	// project
 	root.SetProperty("projectFiles", "[]")
-	root.SetProperty("projectName", "'?'")
+	root.SetProperty("project", "''")
+	root.SetProperty("vendor", "''")
+	root.SetProperty("id", "''")
 	// search
 	root.SetProperty("searchInputText", "''")
 	root.SetProperty("searchResults", "[]")
@@ -53,7 +56,6 @@ func handlePage(c *gin.Context) {
 	root.SetProperty("currentFileLanguage", "'go'")
 	//
 	root.SetProperty("message", "''")
-	root.SetProperty("noteContent", "''")
 	root.SetProperty("data", "{}")
 	// js
 	var jsCode []string

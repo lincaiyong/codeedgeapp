@@ -2,6 +2,13 @@ function leftBar_onClickProject() {
     g.root.leftView = g.root.leftView === 'project' ? '' : 'project';
 }
 
+function leftBar_onClickSearch() {
+    g.root.showSearch = !g.root.showSearch;
+    if (g.root.showSearch) {
+        g.root.searchInputEle.ref.focus();
+    }
+}
+
 function leftBar_onClickData() {
     g.root.bottomView = g.root.bottomView === 'data' ? '' : 'data';
 }

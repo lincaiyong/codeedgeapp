@@ -7,7 +7,7 @@ function data_onInfo(msg) {
 }
 
 function data_onRefresh(dataEle) {
-    g.fetch('./data').then(resp => {
+    g.fetch('./data/').then(resp => {
         const {fields, data} = JSON.parse(resp);
         dataEle.fields = fields;
         dataEle.data = data;
@@ -18,6 +18,10 @@ function data_onRefresh(dataEle) {
 
 function data_onOpen(dataEle, id) {
     console.log(dataEle, id);
-    root_openProject('??');
-    root_openNote(dataEle.dataByKey[id]?.note);
+    const data = dataEle.dataByKey[id];
+    if (data) {
+        g.root.id = data.id;
+        root_openProject(data.project, data.vendor);
+        root_openNote(data.note);
+    }
 }

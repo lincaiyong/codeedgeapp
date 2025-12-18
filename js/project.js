@@ -10,29 +10,41 @@ function project_locateItem() {
     tree_locate(g.root.treeEle, g.root.currentFilePath);
 }
 
+function project_openFile(filePath, lineNumber, selection) {
+    g.root.currentFilePath = filePath;
+    const relPath = filePath;
+    g.fetch(`./file/${relPath}?project=${g.root.project}&vendor=${g.root.vendor}`).then(res => {
+        if (res.startsWith('diff:')) {
+            res = res.substring(5);
+            const data = JSON.parse(res);
+            g.root.showCompare = true;
+            g.root.compareEle.lhs = data[0];
+            g.root.compareEle.rhs = data[1];
+        } else {
+            g.root.showCompare = false;
+            g.root.currentFileContent = res;
+            g.root.currentFileLanguage = relPath.endsWith('.go') ? 'go' : '';
+            if (lineNumber) {
+                setTimeout(() => {
+                    if (selection) {
+                        g.root.editorEle.selection = selection;
+                    } else {
+                        g.root.editorEle.selection = [lineNumber, 1, lineNumber + 1, 1];
+                    }
+                    g.root.editorEle.focusLine = lineNumber;
+                }, 100);
+            }
+        }
+    }).catch((err) => {
+        console.error(err);
+    });
+}
+
 function project_clickItem(itemEle) {
     console.log('click: ' + JSON.stringify(itemEle.data));
     if (itemEle.data.leaf) {
-        g.root.currentFilePath = itemEle.data.key;
-        const relPath = itemEle.data.key;
-        g.fetch('./file/' + relPath).then(res => {
-            if (res.startsWith('diff:')) {
-                res = res.substring(5);
-                const data = JSON.parse(res);
-                g.root.showCompare = true;
-                const diffModel = g.root.compareEle._editor.getModel();
-                if (diffModel) {
-                    diffModel.original.setValue(data[0]);
-                    diffModel.modified.setValue(data[1]);
-                }
-            } else {
-                g.root.showCompare = false;
-                g.root.currentFileContent = res;
-                g.root.currentFileLanguage = relPath.endsWith('.go') ? 'go' : '';
-            }
-        }).catch((err) => {
-            console.error(err);
-        });
+        const filePath = itemEle.data.key;
+        project_openFile(filePath);
     }
 }
 
@@ -58,7 +70,7 @@ function search_doSearch() {
     if (!g.root.searchRegexBtnEle.selected) {
         flags.push('-F')
     }
-    g.fetch(`./search?text=${text}&flag=${flags.join(' ')}`).then(resp => {
+    g.fetch(`./search/?text=${text}&flag=${flags.join(' ')}&project=${g.root.project}&vendor=${g.root.vendor}`).then(resp => {
         const obj = JSON.parse(resp);
         const results = [];
         const resultMap = {};
@@ -83,23 +95,8 @@ function search_doSearch() {
 
 function search_clickItem(ele) {
     if (ele.data.leaf) {
-        console.log(ele.data.key);
         const {path, line_number, match_index} = g.root.searchResultMap[ele.data.key];
-        console.log(path, line_number);
-        g.root.currentFilePath = path;
-        g.fetch('./file/' + path).then(res => {
-            g.root.currentFileContent = res;
-            if (path.endsWith('.go')) {
-                g.root.currentFileLanguage = 'go';
-            }
-            g.root.showCompare = false;
-            setTimeout(() => {
-                g.root.editorEle.selection = [line_number, match_index[0] + 1, line_number, match_index[1] + 1];
-                g.root.editorEle.focusLine = line_number;
-            }, 100);
-        }).catch((err) => {
-            console.error(err);
-        });
+        project_openFile(path, line_number, [line_number, match_index[0] + 1, line_number, match_index[1] + 1]);
     }
 }
 
@@ -135,7 +132,9 @@ function editor_onCursorChange(lineNo, charNo) {
 }
 
 function editor_copyPath() {
-    navigator.clipboard.writeText(g.root.currentFilePath);
+    const v = `@${g.root.currentFilePath}:${g.root.editorEle.currentLine}`;
+    navigator.clipboard.writeText(v);
+    editor_appendValue(g.root.noteEle.editorEle, `\n${v}`);
 }
 
 function editor_addBookmark() {

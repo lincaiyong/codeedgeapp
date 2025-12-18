@@ -9,14 +9,14 @@ import (
 	"github.com/lincaiyong/uniapi/service/monica"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
-	"path/filepath"
+	"strconv"
 )
 
 func main() {
-	dir, _ := filepath.Abs("..")
 	codeedgeapp.Run(func(r *gin.RouterGroup) {
-		r.POST("/chat", func(c *gin.Context) {
+		r.POST("/chat/", func(c *gin.Context) {
 			var req struct {
 				Data string `json:"data"`
 			}
@@ -45,55 +45,90 @@ func main() {
 			_, _ = fmt.Fprintf(c.Writer, "event: close\ndata: \n\n")
 			c.Writer.Flush()
 		})
-		r.GET("/files", func(c *gin.Context) {
-			url := fmt.Sprintf("https://codeedge.cc/testeval/files?project=%s&vendor=%s", c.Query("project"), c.Query("vendor"))
-			resp, err := http.DefaultClient.Get(url)
+		r.GET("/files/", func(c *gin.Context) {
+			params := url.Values{}
+			params.Add("project", c.Query("project"))
+			params.Add("vendor", c.Query("vendor"))
+			b, err := doRequest(fmt.Sprintf("https://codeedge.cc/testeval/files/?%s", params.Encode()))
 			if err != nil {
-				log.ErrorLog("fail to request: %v", err)
+				log.ErrorLog("fail to do request: %v", err)
 				c.String(http.StatusInternalServerError, err.Error())
-				return
-			}
-			if resp.StatusCode != http.StatusOK {
-				log.ErrorLog("fail to request: code=%d", resp.StatusCode)
-				c.String(http.StatusInternalServerError, "fail to request")
-				return
-			}
-			defer func() { _ = resp.Body.Close() }()
-			b, err := io.ReadAll(resp.Body)
-			if err != nil {
-				log.ErrorLog("fail to read body: %v", err)
-				c.String(http.StatusInternalServerError, "fail to read body")
 				return
 			}
 			c.String(http.StatusOK, string(b))
 		})
 		r.GET("/file/*filepath", func(c *gin.Context) {
-			filePath := c.Param("filepath")
-			b, err := os.ReadFile(filepath.Join(dir, filePath))
+			params := url.Values{}
+			params.Add("project", c.Query("project"))
+			params.Add("vendor", c.Query("vendor"))
+			b, err := doRequest(fmt.Sprintf("https://codeedge.cc/testeval/file/%s?%s", c.Param("filepath"), params.Encode()))
 			if err != nil {
-				log.ErrorLog("fail to read file: %v", err)
-				c.String(http.StatusNotFound, err.Error())
+				log.ErrorLog("fail to do request: %v", err)
+				c.String(http.StatusInternalServerError, err.Error())
 				return
 			}
 			c.String(http.StatusOK, string(b))
 		})
-		r.GET("/search", func(c *gin.Context) {
-			// var args []string
-			text := c.Query("text")
-			flag := c.Query("flag")
-			_, _ = text, flag
-			// common.RunCommand(c.Request.Context(), dir, "rg", args...)
-			// TODO
-			c.Status(http.StatusOK)
-		})
-		r.GET("/data", func(c *gin.Context) {
-			type Record struct {
-				larkbase.Meta `lark:"https://bytedance.larkoffice.com/base/P8QubLDkzabEJNsaNbacfha0nCd?table=tblUgfvHyAmuS3zx"`
-				Id            larkbase.NumberField `lark:"id"`
-				Sop           larkbase.TextField   `lark:"sop"`
-				VulnCode      larkbase.TextField   `lark:"vuln_code"`
-				SafeCode      larkbase.TextField   `lark:"safe_code"`
+		r.GET("/search/", func(c *gin.Context) {
+			params := url.Values{}
+			params.Add("text", c.Query("text"))
+			params.Add("flag", c.Query("flag"))
+			params.Add("project", c.Query("project"))
+			params.Add("vendor", c.Query("vendor"))
+			b, err := doRequest(fmt.Sprintf("https://codeedge.cc/testeval/search/?%s", params.Encode()))
+			if err != nil {
+				log.ErrorLog("fail to do request: %v", err)
+				c.String(http.StatusInternalServerError, err.Error())
+				return
 			}
+			c.String(http.StatusOK, string(b))
+		})
+		type Record struct {
+			larkbase.Meta `lark:"https://bytedance.larkoffice.com/base/P8QubLDkzabEJNsaNbacfha0nCd?table=tblUgfvHyAmuS3zx"`
+			Id            larkbase.NumberField `lark:"id"`
+			Sop           larkbase.TextField   `lark:"sop"`
+			Note          larkbase.TextField   `lark:"note"`
+			VulnCode      larkbase.TextField   `lark:"vuln_code"`
+			VendorCode    larkbase.TextField   `lark:"vendor_code"`
+			SafeCode      larkbase.TextField   `lark:"safe_code"`
+		}
+		r.POST("/note/", func(c *gin.Context) {
+			var data struct {
+				Note string `json:"note"`
+				Id   string `json:"id"`
+			}
+			err := c.BindJSON(&data)
+			if err != nil {
+				log.ErrorLog("fail to bind json: %v", err)
+				c.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			conn, err := larkbase.Connect[Record](c.Request.Context(), os.Getenv("LARK_APP_ID"), os.Getenv("LARK_APP_SECRET"))
+			if err != nil {
+				log.ErrorLog("fail to connect: %v", err)
+				c.String(http.StatusInternalServerError, err.Error())
+				return
+			}
+			id, _ := strconv.Atoi(data.Id)
+			var record Record
+			err = conn.Find(&record, larkbase.NewFindOption(conn.FilterAnd(conn.Condition().Id.Is(id))))
+			if err != nil {
+				log.ErrorLog("fail to find record: %v", err)
+				c.String(http.StatusInternalServerError, err.Error())
+				return
+			}
+			log.InfoLog("record: %v", conn.MarshalIgnoreError(&record))
+			record.Note.SetValue(data.Note)
+			err = conn.Update(&record)
+			if err != nil {
+				log.ErrorLog("fail to update record: %v", err)
+				c.String(http.StatusInternalServerError, err.Error())
+				return
+			}
+			log.InfoLog("record updated: %s", record.Id.StringValue())
+			c.String(http.StatusOK, "updated")
+		})
+		r.GET("/data/", func(c *gin.Context) {
 			conn, err := larkbase.Connect[Record](c.Request.Context(), os.Getenv("LARK_APP_ID"), os.Getenv("LARK_APP_SECRET"))
 			if err != nil {
 				log.ErrorLog("fail to connect: %v", err)
@@ -107,13 +142,15 @@ func main() {
 				c.String(http.StatusInternalServerError, err.Error())
 				return
 			}
-			fields := []string{"id", "project", "note"}
+			fields := []string{"id", "project", "vendor", "sop", "note"}
 			data := make([][]string, 0)
 			for _, record := range records {
 				data = append(data, []string{
 					record.Id.StringValue(),
 					record.VulnCode.StringValue(),
+					record.VendorCode.StringValue(),
 					record.Sop.StringValue(),
+					record.Note.StringValue(),
 				})
 			}
 			c.JSON(http.StatusOK, gin.H{
@@ -122,4 +159,21 @@ func main() {
 			})
 		})
 	})
+}
+
+func doRequest(url string) ([]byte, error) {
+	log.InfoLog("doRequest url: %s", url)
+	resp, err := http.DefaultClient.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("http status code: %d", resp.StatusCode)
+	}
+	defer func() { _ = resp.Body.Close() }()
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
 }

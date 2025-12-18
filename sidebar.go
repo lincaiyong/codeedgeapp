@@ -5,7 +5,7 @@ import . "github.com/lincaiyong/gui"
 func LeftBar(opt *Opt) *Element {
 	return Div(opt,
 		Named("projectBtn", ToolButton(NewButtonOpt().Svg(SvgProject).X("parent.w/2-.w/2-0.5").Y(".x").Selected("root.leftView === 'project'").OnClick("leftBar_onClickProject"))),
-		//ToolButton(NewButtonOpt().Svg(SvgSearch).X("prev.x").Y("prev.y2 + 8").Selected("root.leftView === 'search'").OnClick("leftBar_clickSearch")),
+		ToolButton(NewButtonOpt().Svg(SvgSearch).X("prev.x").Y("prev.y2 + 8").Selected("root.showSearch").OnClick("leftBar_onClickSearch")),
 		//ToolButton(NewButtonOpt().Svg(SvgPullRequests).X("prev.x").Y("prev.y2 + 8")),
 		//HDivider(NewOpt().X("prev.x").Y("prev.y2 + 9").W("prev.w").BgColor(ColorGray201)),
 		//ToolButton(NewButtonOpt().Svg(SvgStructure).X("prev.x").Y("prev.y2 + 9")),
