@@ -13,7 +13,7 @@ func ProjectView() *Element {
 						Button(NewButtonOpt().X("next.x-parent.h+.y").Y("next.y").Svg(SvgLocate).OnClick("project_locateItem")),
 						Button(NewButtonOpt().X("next.x-parent.h+.y").Y("next.y").Svg(SvgExpandAll).OnClick("project_expandAll")),
 						Button(NewButtonOpt().X("next.x-parent.h+.y").Y("next.y").Svg(SvgCollapseAll).OnClick("project_collapseAll")),
-						Button(NewButtonOpt().X("parent.w-parent.h+.y").Y("parent.h/2-.h/2").Svg(SvgMoreVertical)),
+						Button(NewButtonOpt().X("parent.w-parent.h+.y").Y("parent.h/2-.h/2").Svg(SvgHide).OnClick("() => g.root.leftView = ''")),
 					),
 				),
 				// sub header

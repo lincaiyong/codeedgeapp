@@ -23,7 +23,8 @@ func handlePage(c *gin.Context) {
 					)),
 					Named("rightViewBar", VBar(NewBarOpt().X("prev.v ? (next.v ? parent.w*3/4 : parent.w-.w/2) : -.w/2").V("next.v && prev.v"))),
 					Named("rightView", Div(NewOpt().X("prev.x+prev.w/2").W("parent.w-.x").V("!!root.rightView").BgColor(ColorGray247).BorderLeft(1).BorderColor(ColorGray235),
-						NotebookView(),
+						NoteView(),
+						ChatView(),
 					)),
 				)),
 				Named("bottomViewBar", HBar(NewBarOpt().Y("prev.v ? (next.v ? parent.h*3/5 : parent.h-.h/2) : -.h/2").V("next.v && prev.v"))),
@@ -53,7 +54,7 @@ func handlePage(c *gin.Context) {
 	root.SetProperty("currentFileLanguage", "'go'")
 	//
 	root.SetProperty("message", "''")
-	root.SetProperty("noteContent", "'@a.b:10'")
+	root.SetProperty("noteContent", "''")
 	// js
 	var jsCode []string
 	items, _ := pageJsFS.ReadDir("js")

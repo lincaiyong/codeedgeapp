@@ -1,6 +1,8 @@
 function root_onCreated() {
     setTimeout(function () {
         root_showInfo("welcome");
+        g.root.leftView = 'project';
+        g.root.rightView = 'chat';
         g.root.bottomView = 'data';
         g.root.dataEle.fields = ['id', 'project', 'note', 'patch'];
         g.root.dataEle.data = [['1', 'xx', '@data.go:10\n', ''], ['2', 'xx', '@run.go:20', '']];
@@ -26,7 +28,6 @@ function root_onUpdated(ele, k) {
     if (k === 'message') {
 
     }
-
 }
 
 function root_showWarn(msg) {
@@ -48,4 +49,14 @@ function root_openProject(key) {
 function root_openNote(text) {
     g.root.rightView = 'note';
     g.root.noteContent = text;
+}
+
+function root_test() {
+    g.event('/test', (data, reason) => {
+        if (reason === 'close' || reason === 'error') {
+            console.log('done');
+        } else {
+            console.log(data);
+        }
+    });
 }
