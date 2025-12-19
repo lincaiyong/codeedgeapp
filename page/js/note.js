@@ -7,11 +7,17 @@ function note_onSave() {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+            data: g.root.dataSource,
             note,
             id: g.root.id,
         })
-    }).then(() => {
-        root_showInfo('note saved');
-        data_onRefresh(g.root.dataEle);
+    }).then(resp => {
+        const {data, error} = resp;
+        if (error) {
+            console.log(error);
+        } else {
+            root_showInfo('note saved');
+            data_onRefresh(g.root.dataEle);
+        }
     }).catch(error => console.error('Error:', error));
 }

@@ -58,6 +58,11 @@ func Handle(c *gin.Context) {
 	//
 	root.SetProperty("message", "''")
 	root.SetProperty("data", "{}")
+	dataSource := c.Query("data")
+	if dataSource == "" {
+		dataSource = "demo"
+	}
+	root.SetProperty("dataSource", fmt.Sprintf("'%s'", dataSource))
 	// js
 	var jsCode []string
 	items, _ := pageJsFS.ReadDir("js")

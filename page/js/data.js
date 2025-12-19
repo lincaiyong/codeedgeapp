@@ -7,7 +7,7 @@ function data_onInfo(msg) {
 }
 
 function data_onRefresh(dataEle) {
-    g.fetch('./data/demo/').then(resp => {
+    g.fetch(`./data/${g.root.dataSource}/`).then(resp => {
         const {fields, data} = resp;
         dataEle.fields = fields;
         dataEle.data = data;
