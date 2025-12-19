@@ -1,79 +1,67 @@
 package handler
 
 import (
+	"codeedgeapp/handler/cache"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/gui"
-	"github.com/lincaiyong/log"
 	"net/http"
-	"path/filepath"
 	"strings"
 	"time"
 )
 
 func Files(c *gin.Context) {
 	project := c.Query("project")
-	if project == "" || strings.Contains(project, ".") {
-		c.String(http.StatusBadRequest, "project is invalid")
-		return
-	}
-
-	filePath := filepath.Join("zip", project+".zip")
-	mod, err := modifiedTime(filePath)
-	if err != nil {
-		log.ErrorLog("fail to get modified time: %v", err)
-		c.String(http.StatusInternalServerError, "fail to stat zip")
-		return
-	}
 	vendor := c.Query("vendor")
-	if vendor == "" && gui.IfNotModifiedSince(c, mod) {
+	if project == "" || strings.Contains(project, ".") || strings.Contains(vendor, ".") {
+		errorResponse(c, "project or vendor is invalid")
+		return
+	}
+	projectMod, err := cache.GetModTime(project)
+	if err != nil {
+		errorResponse(c, "fail to get modified time: %v", err)
+		return
+	}
+	if vendor == "" && gui.IfNotModifiedSince(c, projectMod) {
 		c.String(http.StatusNotModified, "not modified")
 		return
 	}
-	zipsToRead := []string{project}
+	projects := []string{project}
 	if vendor != "" {
-		if strings.Contains(vendor, ".") {
-			c.String(http.StatusBadRequest, "vendor is invalid")
-			return
-		}
 		for _, item := range strings.Split(vendor, ",") {
-			filePath = filepath.Join("zip", item+".zip")
-			var itemMod time.Time
-			itemMod, err = modifiedTime(filePath)
+			var vendorMod time.Time
+			vendorMod, err = cache.GetModTime(item)
 			if err != nil {
-				log.ErrorLog("fail to get modified time: %v", err)
-				c.String(http.StatusInternalServerError, "fail to stat zip")
+				errorResponse(c, "fail to get modified time: %v", err)
 				return
 			}
-			if mod.Before(itemMod) {
-				mod = itemMod
+			if projectMod.Before(vendorMod) {
+				projectMod = vendorMod
 			}
-			zipsToRead = append(zipsToRead, item)
+			projects = append(projects, item)
 		}
 	}
-	if gui.IfNotModifiedSince(c, mod) {
+	if gui.IfNotModifiedSince(c, projectMod) {
 		c.String(http.StatusNotModified, "not modified")
 		return
 	}
 
-	ret := make([]string, 0)
-	for _, k := range zipsToRead {
-		path := filepath.Join("zip", k+".zip")
+	var result []string
+	for _, name := range projects {
 		var tmp []string
-		tmp, err = readZipFiles(path)
+		tmp, err = cache.ReadFiles(name)
 		if err != nil {
-			log.ErrorLog("fail to get sample: %v", err)
-			c.String(http.StatusInternalServerError, "fail to read zip")
+			errorResponse(c, "fail to read files: %v", err)
 			return
 		}
-		if k != project {
+		if name != project {
 			for _, item := range tmp {
-				ret = append(ret, fmt.Sprintf("@vendor/%s/%s", strings.ReplaceAll(k, "/", "-"), item))
+				result = append(result, fmt.Sprintf("@vendor/%s/%s", name, item))
 			}
 		} else {
-			ret = append(ret, tmp...)
+			result = append(result, tmp...)
 		}
 	}
-	gui.SetLastModified(c, mod, 0)
-	c.JSON(http.StatusOK, ret)
+	gui.SetLastModified(c, projectMod, 0)
+	dataResponse(c, result)
 }

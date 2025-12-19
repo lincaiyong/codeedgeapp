@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"codeedgeapp/handler/cache"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -8,7 +9,6 @@ import (
 	"github.com/lincaiyong/gui"
 	"github.com/lincaiyong/log"
 	"net/http"
-	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -16,59 +16,51 @@ import (
 
 func Search(c *gin.Context) {
 	project := c.Query("project")
-	if project == "" || strings.Contains(project, ".") {
-		c.String(http.StatusBadRequest, "project is invalid")
-		return
-	}
 	vendor := c.Query("vendor")
-	if strings.Contains(vendor, ".") {
-		c.String(http.StatusBadRequest, "vendor is invalid")
+	if project == "" || strings.Contains(project, ".") || strings.Contains(vendor, ".") {
+		errorResponse(c, "project or vendor is invalid")
 		return
 	}
 	text := c.Query("text")
 	flag := c.Query("flag")
 	if strings.TrimSpace(text) == "" {
-		c.String(http.StatusBadRequest, "text is required")
+		errorResponse(c, "text is invalid")
 		return
 	}
-	zipFilePath := filepath.Join("zip", project+".zip")
-	mod, err := modifiedTime(zipFilePath)
+	projectMod, err := cache.GetModTime(project)
 	if err != nil {
-		log.ErrorLog("fail to get modified time: %v", err)
-		c.String(http.StatusInternalServerError, "fail to stat zip")
+		errorResponse(c, "fail to get modified time: %v", err)
 		return
 	}
-	if vendor == "" && gui.IfNotModifiedSince(c, mod) {
+	if vendor == "" && gui.IfNotModifiedSince(c, projectMod) {
 		c.String(http.StatusNotModified, "not modified")
 		return
 	}
-	projectToSearch := []string{project}
+	projects := []string{project}
 	if vendor != "" {
 		for _, item := range strings.Split(vendor, ",") {
-			zipFilePath = filepath.Join("zip", item+".zip")
-			var itemMod time.Time
-			itemMod, err = modifiedTime(zipFilePath)
+			var vendorMod time.Time
+			vendorMod, err = cache.GetModTime(item)
 			if err != nil {
-				log.ErrorLog("fail to get modified time: %v", err)
-				c.String(http.StatusInternalServerError, "fail to stat zip")
+				errorResponse(c, "fail to get modified time: %v", err)
 				return
 			}
-			if mod.Before(itemMod) {
-				mod = itemMod
+			if projectMod.Before(vendorMod) {
+				projectMod = vendorMod
 			}
-			projectToSearch = append(projectToSearch, item)
+			projects = append(projects, item)
 		}
 	}
-	if gui.IfNotModifiedSince(c, mod) {
+	if gui.IfNotModifiedSince(c, projectMod) {
 		c.String(http.StatusNotModified, "not modified")
 		return
 	}
-
-	result := []*RipgrepItem{}
-	for _, item := range projectToSearch {
+	var result []*RipgrepItem
+	for _, item := range projects {
 		var tmp []*RipgrepItem
 		tmp, err = searchProject(c, item, text, flag)
 		if err != nil {
+			errorResponse(c, "fail to search project: %v", err)
 			return
 		}
 		if item != project {
@@ -79,15 +71,13 @@ func Search(c *gin.Context) {
 		result = append(result, tmp...)
 	}
 	b, _ := json.MarshalIndent(result, "", "    ")
-	gui.SetLastModified(c, mod, 0)
+	gui.SetLastModified(c, projectMod, 0)
 	c.String(http.StatusOK, string(b))
 }
 
 func searchProject(c *gin.Context, project, text, flag string) ([]*RipgrepItem, error) {
-	workDir, err := unzipSample(filepath.Join("zip", project+".zip"), project)
+	workDir, err := cache.EnsureProjectDir(project)
 	if err != nil {
-		log.ErrorLog("fail to unzip sample: %v", err)
-		c.String(http.StatusInternalServerError, "fail to unzip sample")
 		return nil, err
 	}
 	log.InfoLog("workDir: %s", workDir)

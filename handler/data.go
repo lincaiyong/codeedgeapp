@@ -26,14 +26,12 @@ func Data(c *gin.Context) {
 		return
 	}
 	result := make([]map[string]string, 0)
+	fields := append(requiredFields, conf.DataFields[name]...)
 	for _, record := range records {
 		item := map[string]string{
 			"id": record.Id.StringValue(),
 		}
-		for _, field := range requiredFields {
-			item[field] = record.Data[field]
-		}
-		for _, field := range conf.DataFields[name] {
+		for _, field := range fields {
 			item[field] = record.Data[field]
 		}
 		result = append(result, item)
