@@ -5,7 +5,7 @@ import (
 	"github.com/lincaiyong/larkbase"
 )
 
-var requiredFields = []string{"project", "vendor", "note"}
+var requiredFields = []string{"id", "project", "vendor", "note"}
 
 func Data(c *gin.Context) {
 	name := c.Param("name")
@@ -28,9 +28,7 @@ func Data(c *gin.Context) {
 	result := make([]map[string]string, 0)
 	fields := append(requiredFields, conf.DataFields[name]...)
 	for _, record := range records {
-		item := map[string]string{
-			"id": record.Id.StringValue(),
-		}
+		item := map[string]string{}
 		for _, field := range fields {
 			item[field] = record.Data[field]
 		}

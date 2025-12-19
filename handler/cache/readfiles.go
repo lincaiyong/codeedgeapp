@@ -18,7 +18,8 @@ func ReadFiles(project string) ([]string, error) {
 		if d.IsDir() {
 			return nil
 		}
-		result = append(result, path)
+		relPath, _ := filepath.Rel(dir, path)
+		result = append(result, relPath)
 		return nil
 	})
 	return result, err

@@ -1,13 +1,12 @@
 package handler
 
 import (
-	"github.com/lincaiyong/codeedgeapp/config"
 	"github.com/lincaiyong/codeedgeapp/handler/cache"
 )
 
-var conf config.Config
+var conf Config
 
-func Init(conf_ config.Config) {
-	cache.Init(conf.SshRepoUrl)
+func Init(conf_ Config) {
 	conf = conf_
+	cache.Init(conf.SshRepoUrl, conf.ResetCache)
 }

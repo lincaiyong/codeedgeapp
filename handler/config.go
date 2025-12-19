@@ -1,4 +1,4 @@
-package config
+package handler
 
 import "context"
 
@@ -11,4 +11,5 @@ type Config struct {
 	DataFields map[string][]string
 	SshRepoUrl string
 	ChatFn     ChatFn
+	ResetCache bool
 }

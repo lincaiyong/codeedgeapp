@@ -9,28 +9,15 @@ import (
 )
 
 func File(c *gin.Context) {
-	var project string
-	filePath := c.Param("filepath")
-	pathItems := strings.Split(filePath, "/")
-	if pathItems[1] == "@vendor" {
-		if len(pathItems) > 3 {
-			project = pathItems[2]
-			filePath = strings.Join(pathItems[3:], "/")
-		} else {
-			errorResponse(c, "file not found")
-			return
-		}
-	} else {
-		project = c.Query("project")
-		filePath = strings.Join(pathItems[1:], "/")
-	}
+	filePath := c.Param("filepath")[1:]
+	project := c.Query("project")
 	if project == "" || strings.Contains(project, ".") {
 		errorResponse(c, "project is invalid: %s", project)
 		return
 	}
 	mod, err := cache.GetModTime(project)
 	if err != nil {
-		errorResponse(c, "fail to get file modtime: %v", err)
+		errorResponse(c, "project not found")
 		return
 	}
 	if gui.IfNotModifiedSince(c, mod) {

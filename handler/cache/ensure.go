@@ -19,6 +19,12 @@ func EnsureProjectDir(project string) (string, error) {
 	_, _, err = common.RunCommand(context.Background(), dir, "git", "clone", "--depth=1", "--branch",
 		project, sshRepoUrl, ".")
 	if err != nil {
+		_ = os.RemoveAll(dir)
+		return "", err
+	}
+	_, _, err = common.RunCommand(context.Background(), dir, "rm", "-rf", ".git")
+	if err != nil {
+		_ = os.RemoveAll(dir)
 		return "", err
 	}
 	return dir, nil

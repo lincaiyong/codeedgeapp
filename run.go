@@ -3,7 +3,6 @@ package codeedgeapp
 import (
 	_ "embed"
 	"github.com/gin-gonic/gin"
-	"github.com/lincaiyong/codeedgeapp/config"
 	"github.com/lincaiyong/codeedgeapp/handler"
 	"github.com/lincaiyong/codeedgeapp/page"
 	"github.com/lincaiyong/daemon/common"
@@ -12,7 +11,7 @@ import (
 	"os"
 )
 
-func Run(conf config.Config) {
+func Run(conf handler.Config) {
 	handler.Init(conf)
 	common.StartServer(
 		"codeedgeapp",
@@ -26,9 +25,9 @@ func Run(conf config.Config) {
 			r.GET("/search/", handler.Search)
 			r.POST("/chat/", handler.Chat)
 			r.POST("/note/", handler.SaveNote)
-			r.GET("/data/list", handler.ListData)
-			r.GET("/data/:name", handler.Data)
-			r.GET("/status", func(c *gin.Context) {
+			r.GET("/data/list/", handler.ListData)
+			r.GET("/data/:name/", handler.Data)
+			r.GET("/status/", func(c *gin.Context) {
 				c.JSON(http.StatusOK, gin.H{
 					"status": "ok",
 					"pid":    os.Getpid(),

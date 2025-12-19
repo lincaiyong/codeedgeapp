@@ -11,14 +11,12 @@ import (
 	"net/http"
 	"sort"
 	"strings"
-	"time"
 )
 
 func Search(c *gin.Context) {
 	project := c.Query("project")
-	vendor := c.Query("vendor")
-	if project == "" || strings.Contains(project, ".") || strings.Contains(vendor, ".") {
-		errorResponse(c, "project or vendor is invalid")
+	if project == "" || strings.Contains(project, ".") {
+		errorResponse(c, "project is invalid")
 		return
 	}
 	text := c.Query("text")
@@ -27,51 +25,22 @@ func Search(c *gin.Context) {
 		errorResponse(c, "text is invalid")
 		return
 	}
-	projectMod, err := cache.GetModTime(project)
+	mod, err := cache.GetModTime(project)
 	if err != nil {
-		errorResponse(c, "fail to get modified time: %v", err)
+		errorResponse(c, "project not found")
 		return
 	}
-	if vendor == "" && gui.IfNotModifiedSince(c, projectMod) {
+	if gui.IfNotModifiedSince(c, mod) {
 		c.String(http.StatusNotModified, "not modified")
 		return
 	}
-	projects := []string{project}
-	if vendor != "" {
-		for _, item := range strings.Split(vendor, ",") {
-			var vendorMod time.Time
-			vendorMod, err = cache.GetModTime(item)
-			if err != nil {
-				errorResponse(c, "fail to get modified time: %v", err)
-				return
-			}
-			if projectMod.Before(vendorMod) {
-				projectMod = vendorMod
-			}
-			projects = append(projects, item)
-		}
-	}
-	if gui.IfNotModifiedSince(c, projectMod) {
-		c.String(http.StatusNotModified, "not modified")
+	result, err := searchProject(c, project, text, flag)
+	if err != nil {
+		errorResponse(c, "fail to search project: %v", err)
 		return
-	}
-	var result []*RipgrepItem
-	for _, item := range projects {
-		var tmp []*RipgrepItem
-		tmp, err = searchProject(c, item, text, flag)
-		if err != nil {
-			errorResponse(c, "fail to search project: %v", err)
-			return
-		}
-		if item != project {
-			for _, t := range tmp {
-				t.Path = fmt.Sprintf("@vendor/%s/%s", strings.ReplaceAll(item, "/", "-"), t.Path)
-			}
-		}
-		result = append(result, tmp...)
 	}
 	b, _ := json.MarshalIndent(result, "", "    ")
-	gui.SetLastModified(c, projectMod, 0)
+	gui.SetLastModified(c, mod, 0)
 	c.String(http.StatusOK, string(b))
 }
 

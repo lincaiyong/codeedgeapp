@@ -14,5 +14,6 @@ func GetModTime(project string) (time.Time, error) {
 	if err != nil {
 		return time.Time{}, err
 	}
-	return stat.ModTime(), nil
+	ret := stat.ModTime()
+	return ret, nil
 }
