@@ -39,9 +39,8 @@ func Search(c *gin.Context) {
 		errorResponse(c, "fail to search project: %v", err)
 		return
 	}
-	b, _ := json.MarshalIndent(result, "", "    ")
 	gui.SetLastModified(c, mod, 0)
-	c.String(http.StatusOK, string(b))
+	dataResponse(c, result)
 }
 
 func searchProject(c *gin.Context, project, text, flag string) ([]*RipgrepItem, error) {

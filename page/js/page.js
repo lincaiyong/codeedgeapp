@@ -75,6 +75,7 @@ function root_fetchProjectFiles(project) {
 
 async function root_openProject(project, vendor) {
     g.root.project = project;
+    g.root.showCompare = false;
     g.root.currentFilePath = '';
     g.root.currentFileContent = '';
     g.root.currentFileLanguage = '';
