@@ -19,11 +19,14 @@ function project_openFile({filePath, lineNumber, selection, patch, rhs}) {
         project = items[1];
         relPath = items.slice(2).join('/');
     }
-    g.fetch(`./file/${relPath}?project=${project}&patch=${encodeURIComponent(patch)}&rhs=${rhs}`).then(res => {
+    g.fetch(`./file/${relPath}?project=${project}&patch=${patch ? encodeURIComponent(patch) : ''}&rhs=${rhs || ''}`).then(res => {
         if (res instanceof Array) {
             g.root.showCompare = true;
             g.root.compareEle.lhs = res[0];
             g.root.compareEle.rhs = res[1];
+            if (res.length === 3) {
+                g.root.currentPatch = res[2].trimEnd();
+            }
         } else {
             g.root.showCompare = false;
             g.root.currentFileContent = res;
@@ -140,9 +143,14 @@ function editor_onCursorChange(lineNo, charNo) {
 }
 
 function editor_copyPath() {
-    const v = `@${g.root.currentFilePath}:${g.root.editorEle.currentLine}`;
+    let v;
+    if (g.root.currentPatch) {
+        v = `---+++ ${g.root.currentFilePath}\n${g.root.currentPatch}\n---+++\n`;
+    } else {
+        v = `@${g.root.currentFilePath}:${g.root.editorEle.currentLine}`;
+    }
     navigator.clipboard.writeText(v);
-    editor_appendValue(g.root.noteEle.editorEle, `\n${v}`);
+    // editor_appendValue(g.root.noteEle.editorEle, `\n${v}`);
 }
 
 function editor_addBookmark() {

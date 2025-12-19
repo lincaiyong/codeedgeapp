@@ -19,6 +19,7 @@ func Run(conf handler.Config) {
 			r.GET("/res/*filepath", HandleRes())
 			r.GET("/", page.Handle)
 			r.GET("/files/", handler.Files)
+			r.GET("/diff/", handler.Diff)
 			r.GET("/file/*filepath", handler.File)
 			r.GET("/search/", handler.Search)
 			r.POST("/chat/", handler.Chat)

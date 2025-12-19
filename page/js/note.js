@@ -21,3 +21,18 @@ function note_onSave() {
         }
     }).catch(error => console.error('Error:', error));
 }
+
+function note_onOpenLink(filePath, lineNumber, patch, rhs, cmd, arg) {
+    if (filePath) {
+        project_openFile({filePath, lineNumber, patch, rhs});
+    } else if (cmd) {
+        switch (cmd) {
+            case 'compare':
+                g.fetch(`./diff/?lhs=${g.root.project}&rhs=${arg}`).then(resp => {
+                    editor_appendValue(g.root.noteEle.editorEle, '\n' + resp.map(t => `@${t}:${arg}`).join('\n'));
+                }).catch(err => {
+                    console.error(err);
+                });
+        }
+    }
+}

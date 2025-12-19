@@ -18,23 +18,23 @@ func File(c *gin.Context) {
 	}
 	patch := c.Query("patch")
 	rhs := c.Query("rhs")
-	if patch == "" {
-		mod, err := cache.GetModTime(project)
-		if err != nil {
-			errorResponse(c, "project not found")
-			return
-		}
-		if gui.IfNotModifiedSince(c, mod) {
-			c.String(http.StatusNotModified, "not modified")
-			return
-		}
+	mod, err := cache.GetModTime(project)
+	if err != nil {
+		errorResponse(c, "project not found")
+		return
+	}
+	if gui.IfNotModifiedSince(c, mod) {
+		c.String(http.StatusNotModified, "not modified")
+		return
+	}
+	var result any
+	if patch == "" && rhs == "" {
 		b, err := cache.ReadFile(project, filePath)
 		if err != nil {
 			errorResponse(c, "fail to read file: %v", err)
 			return
 		}
-		gui.SetLastModified(c, mod, 0)
-		dataResponse(c, string(b))
+		result = string(b)
 	} else if rhs == "" {
 		b, err := cache.ReadFile(project, filePath)
 		if err != nil {
@@ -44,10 +44,10 @@ func File(c *gin.Context) {
 		oldStr := string(b)
 		newStr := edittool.Patch(oldStr, patch)
 		if oldStr == newStr {
-			dataResponse(c, oldStr)
-			return
+			result = oldStr
+		} else {
+			result = [3]string{oldStr, newStr, patch}
 		}
-		dataResponse(c, [2]string{oldStr, newStr})
 	} else {
 		b, err := cache.ReadFile(project, filePath)
 		if err != nil {
@@ -62,9 +62,12 @@ func File(c *gin.Context) {
 		}
 		newStr := string(b)
 		if oldStr == newStr {
-			dataResponse(c, oldStr)
-			return
+			result = oldStr
+		} else {
+			patch = edittool.GeneratePatch(oldStr, newStr)
+			result = [3]string{oldStr, newStr, patch}
 		}
-		dataResponse(c, [2]string{oldStr, newStr})
 	}
+	gui.SetLastModified(c, mod, 0)
+	dataResponse(c, result)
 }

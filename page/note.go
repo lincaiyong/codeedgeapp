@@ -10,7 +10,7 @@ func NoteView() *Element {
 			Button(NewButtonOpt().X("parent.w-parent.h+.y").Y("parent.h/2-.h/2").Svg(SvgHide).OnClick("() => g.root.rightView = ''")),
 		),
 		Div(NewOpt().Y("prev.y2").H("parent.h-.y"),
-			Named("note", Note(NewNoteOpt().OnOpenLink("(filePath, lineNumber, patch, rhs) => project_openFile({filePath, lineNumber, patch, rhs})"))),
+			Named("note", Note(NewNoteOpt().OnOpenLink("note_onOpenLink"))),
 		),
 	)
 }
