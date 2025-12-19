@@ -1,13 +1,11 @@
 package codeedgeapp
 
 import (
-	"codeedgeapp/chat"
-	"codeedgeapp/config"
-	"codeedgeapp/handler"
-	"codeedgeapp/page"
-	"context"
 	_ "embed"
 	"github.com/gin-gonic/gin"
+	"github.com/lincaiyong/codeedgeapp/config"
+	"github.com/lincaiyong/codeedgeapp/handler"
+	"github.com/lincaiyong/codeedgeapp/page"
 	"github.com/lincaiyong/daemon/common"
 	. "github.com/lincaiyong/gui"
 	"net/http"

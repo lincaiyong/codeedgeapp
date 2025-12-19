@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"archive/zip"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"

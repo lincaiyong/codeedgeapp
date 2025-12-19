@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-func ensureProjectDir(project string) (string, error) {
+func EnsureProjectDir(project string) (string, error) {
 	dir := filepath.Join(cacheDir, project)
 	if stat, err := os.Stat(dir); err == nil && stat.IsDir() {
 		return dir, nil

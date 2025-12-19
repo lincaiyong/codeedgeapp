@@ -1,4 +1,4 @@
-module codeedgeapp
+module github.com/lincaiyong/codeedgeapp
 
 go 1.25.1
 

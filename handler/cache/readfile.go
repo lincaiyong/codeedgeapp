@@ -6,7 +6,7 @@ import (
 )
 
 func ReadFile(project, filePath string) ([]byte, error) {
-	dir, err := ensureProjectDir(project)
+	dir, err := EnsureProjectDir(project)
 	if err != nil {
 		return nil, err
 	}

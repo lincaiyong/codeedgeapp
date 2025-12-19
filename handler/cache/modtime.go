@@ -6,7 +6,7 @@ import (
 )
 
 func GetModTime(project string) (time.Time, error) {
-	dir, err := ensureProjectDir(project)
+	dir, err := EnsureProjectDir(project)
 	if err != nil {
 		return time.Time{}, err
 	}
