@@ -7,8 +7,8 @@ function root_onCreated() {
         data_onRefresh(g.root.dataEle);
     });
     let serverPid = 0;
-    setInterval(() => g.fetch('./status').then(resp => {
-        const {pid} = JSON.parse(resp) || {};
+    setInterval(() => g.fetch('./status/').then(resp => {
+        const {pid} = resp || {};
         if (serverPid && pid && pid !== serverPid) {
             location.reload();
         }
@@ -43,16 +43,32 @@ function root_showInfo(msg) {
     g.root.message = `✅ ${msg}`;
 }
 
-function root_openProject(project, vendor) {
+function root_fetchProjectFiles(project) {
+    return new Promise((resolve, reject) => {
+        g.fetch(`./files/?project=${project}`).then(resp => {
+            resolve(resp);
+        }).catch(e => {
+            reject(e);
+        });
+    })
+}
+
+async function root_openProject(project, vendor) {
     g.root.project = project;
     g.root.currentFilePath = '';
     g.root.currentFileContent = '';
     g.root.currentFileLanguage = '';
     g.root.vendor = vendor;
     g.root.leftView = 'project';
-    g.fetch(`./files/?project=${project}&vendor=${vendor}`).then(resp => {
-        g.root.projectFiles = JSON.parse(resp);
-    });
+    let files = await root_fetchProjectFiles(project);
+    if (vendor) {
+        for (const v of vendor.split(',')) {
+            let vendorFiles = await root_fetchProjectFiles(v);
+            vendorFiles = vendorFiles.map(f => `@vendor/${v.replaceAll('/', '%2f')}/${f}`);
+            files = files.concat(vendorFiles);
+        }
+    }
+    g.root.projectFiles = files;
 }
 
 function root_openNote(text) {

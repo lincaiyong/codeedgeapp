@@ -12,8 +12,14 @@ function project_locateItem() {
 
 function project_openFile(filePath, lineNumber, selection) {
     g.root.currentFilePath = filePath;
-    const relPath = filePath;
-    g.fetch(`./file/${relPath}?project=${g.root.project}&vendor=${g.root.vendor}`).then(res => {
+    let project = g.root.project;
+    let relPath = filePath;
+    if (relPath.startsWith('@vendor/')) {
+        const items = filePath.split('/');
+        project = items[1];
+        relPath = items.slice(2).join('/');
+    }
+    g.fetch(`./file/${relPath}?project=${project}`).then(res => {
         if (res.startsWith('diff:')) {
             res = res.substring(5);
             const data = JSON.parse(res);

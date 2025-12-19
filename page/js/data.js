@@ -7,8 +7,8 @@ function data_onInfo(msg) {
 }
 
 function data_onRefresh(dataEle) {
-    g.fetch('./data/').then(resp => {
-        const {fields, data} = JSON.parse(resp);
+    g.fetch('./data/demo/').then(resp => {
+        const {fields, data} = resp;
         dataEle.fields = fields;
         dataEle.data = data;
     }).catch(e => {

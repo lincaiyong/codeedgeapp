@@ -14,7 +14,9 @@ func main() {
 		DataUrl: map[string]string{
 			"demo": "https://bytedance.larkoffice.com/base/RB31bsA7Pa3f5JsKDlhcoTYdnue?table=tblxbNmiqJl67Egt&view=vewQotpDmR",
 		},
-		DataFields: map[string][]string{},
+		DataFields: map[string][]string{
+			"demo": {"sop"},
+		},
 		SshRepoUrl: "git@github.com:lincaiyong/samples",
 		ChatFn:     monica.ChatCompletion,
 		ResetCache: false,

@@ -30,5 +30,5 @@ func File(c *gin.Context) {
 		return
 	}
 	gui.SetLastModified(c, mod, 0)
-	c.String(http.StatusOK, string(b))
+	dataResponse(c, string(b))
 }

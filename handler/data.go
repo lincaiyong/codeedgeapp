@@ -25,14 +25,17 @@ func Data(c *gin.Context) {
 		errorResponse(c, "fail to query: %v", err)
 		return
 	}
-	result := make([]map[string]string, 0)
+	result := make([][]string, 0)
 	fields := append(requiredFields, conf.DataFields[name]...)
 	for _, record := range records {
-		item := map[string]string{}
+		row := make([]string, 0)
 		for _, field := range fields {
-			item[field] = record.Data[field]
+			row = append(row, record.Data[field])
 		}
-		result = append(result, item)
+		result = append(result, row)
 	}
-	dataResponse(c, result)
+	dataResponse(c, gin.H{
+		"fields": fields,
+		"data":   result,
+	})
 }

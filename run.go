@@ -7,8 +7,6 @@ import (
 	"github.com/lincaiyong/codeedgeapp/page"
 	"github.com/lincaiyong/daemon/common"
 	. "github.com/lincaiyong/gui"
-	"net/http"
-	"os"
 )
 
 func Run(conf handler.Config) {
@@ -27,12 +25,7 @@ func Run(conf handler.Config) {
 			r.POST("/note/", handler.SaveNote)
 			r.GET("/data/list/", handler.ListData)
 			r.GET("/data/:name/", handler.Data)
-			r.GET("/status/", func(c *gin.Context) {
-				c.JSON(http.StatusOK, gin.H{
-					"status": "ok",
-					"pid":    os.Getpid(),
-				})
-			})
+			r.GET("/status/", handler.Status)
 			return nil
 		},
 	)
