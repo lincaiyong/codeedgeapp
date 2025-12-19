@@ -6,8 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/log"
 	"github.com/lincaiyong/uniapi/service/monica"
-	"net/http"
-	"os"
 )
 
 //go:embed prompt.txt
@@ -19,20 +17,17 @@ func Chat(c *gin.Context) {
 	}
 	err := c.BindJSON(&req)
 	if err != nil {
-		log.ErrorLog("fail to bind json: %v", err)
-		c.String(http.StatusBadRequest, err.Error())
+		errorResponse(c, "fail to bind json: %v", err)
 		return
 	}
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Expose-Headers", "Content-Type")
-
 	c.Header("Content-Type", "text/event-stream")
 	c.Header("Cache-Control", "no-cache")
 	c.Header("Connection", "keep-alive")
 
-	monica.Init(os.Getenv("MONICA_SESSION_ID"))
 	q := fmt.Sprintf("%s\n\n%s", systemPrompt, req.Data)
-	_, err = monica.ChatCompletion(c.Request.Context(), monica.ModelClaude4Sonnet, q, func(s string) {
+	_, err = conf.ChatFn(c.Request.Context(), monica.ModelClaude4Sonnet, q, func(s string) {
 		fmt.Print(s)
 		_, _ = fmt.Fprintf(c.Writer, "data: %s\n\n", s)
 		c.Writer.Flush()
