@@ -10,7 +10,7 @@ function project_locateItem() {
     tree_locate(g.root.treeEle, g.root.currentFilePath);
 }
 
-function project_openFile({filePath, lineNumber, selection, patch}) {
+function project_openFile({filePath, lineNumber, selection, patch, rhs}) {
     g.root.currentFilePath = filePath;
     let project = g.root.project;
     let relPath = filePath;
@@ -19,7 +19,7 @@ function project_openFile({filePath, lineNumber, selection, patch}) {
         project = items[1];
         relPath = items.slice(2).join('/');
     }
-    g.fetch(`./file/${relPath}?project=${project}&patch=${encodeURIComponent(patch)}`).then(res => {
+    g.fetch(`./file/${relPath}?project=${project}&patch=${encodeURIComponent(patch)}&rhs=${rhs}`).then(res => {
         if (res instanceof Array) {
             g.root.showCompare = true;
             g.root.compareEle.lhs = res[0];

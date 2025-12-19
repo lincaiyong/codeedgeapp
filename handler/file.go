@@ -17,6 +17,7 @@ func File(c *gin.Context) {
 		return
 	}
 	patch := c.Query("patch")
+	rhs := c.Query("rhs")
 	if patch == "" {
 		mod, err := cache.GetModTime(project)
 		if err != nil {
@@ -34,7 +35,7 @@ func File(c *gin.Context) {
 		}
 		gui.SetLastModified(c, mod, 0)
 		dataResponse(c, string(b))
-	} else {
+	} else if rhs == "" {
 		b, err := cache.ReadFile(project, filePath)
 		if err != nil {
 			errorResponse(c, "fail to read file: %v", err)
@@ -42,6 +43,28 @@ func File(c *gin.Context) {
 		}
 		oldStr := string(b)
 		newStr := edittool.Patch(oldStr, patch)
+		if oldStr == newStr {
+			dataResponse(c, oldStr)
+			return
+		}
+		dataResponse(c, [2]string{oldStr, newStr})
+	} else {
+		b, err := cache.ReadFile(project, filePath)
+		if err != nil {
+			errorResponse(c, "fail to read file: %v", err)
+			return
+		}
+		oldStr := string(b)
+		b, err = cache.ReadFile(rhs, filePath)
+		if err != nil {
+			errorResponse(c, "fail to read file: %v", err)
+			return
+		}
+		newStr := string(b)
+		if oldStr == newStr {
+			dataResponse(c, oldStr)
+			return
+		}
 		dataResponse(c, [2]string{oldStr, newStr})
 	}
 }
