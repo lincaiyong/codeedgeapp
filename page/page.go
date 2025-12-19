@@ -1,4 +1,4 @@
-package codeedgeapp
+package page
 
 import (
 	"embed"
@@ -11,7 +11,7 @@ import (
 //go:embed js/*.js
 var pageJsFS embed.FS
 
-func handlePage(c *gin.Context) {
+func Handle(c *gin.Context) {
 	root := Div(NewOpt().OnCreated("root_onCreated").OnUpdated("root_onUpdated"),
 		Named("bottomBarElse", Div(NewOpt().H("parent.h-next.h"),
 			Named("leftBar", LeftBar(NewOpt().W("33").BgColor(ColorGray247).BorderRight(1).BorderColor(ColorGray235))),

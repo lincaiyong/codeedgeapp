@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"encoding/json"
@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-func handleSearch(c *gin.Context) {
+func Search(c *gin.Context) {
 	project := c.Query("project")
 	if project == "" || strings.Contains(project, ".") {
 		c.String(http.StatusBadRequest, "project is invalid")

@@ -1,6 +1,8 @@
 package codeedgeapp
 
 import (
+	"codeedgeapp/handler"
+	"codeedgeapp/page"
 	_ "embed"
 	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/daemon/common"
@@ -9,15 +11,22 @@ import (
 	"os"
 )
 
-func Run(f func(group *gin.RouterGroup)) {
+func Run(data map[string]string, samplesRepo string) {
+	handler.Init(data, samplesRepo)
 	common.StartServer(
 		"codeedgeapp",
 		"v1.0.1",
 		"",
 		func(envs []string, r *gin.RouterGroup) error {
-			f(r)
 			r.GET("/res/*filepath", HandleRes())
-			r.GET("/", handlePage)
+			r.GET("/", page.Handle)
+			r.GET("/files/", handler.Files)
+			r.GET("/file/*filepath", handler.File)
+			r.GET("/search/", handler.Search)
+			r.POST("/chat/", handler.Chat)
+			r.POST("/note/", handler.SaveNote)
+			r.GET("/data/list", handler.ListData)
+			r.GET("/data/:name", handler.Data)
 			r.GET("/status", func(c *gin.Context) {
 				c.JSON(http.StatusOK, gin.H{
 					"status": "ok",

@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	_ "embed"
@@ -13,7 +13,7 @@ import (
 //go:embed prompt.txt
 var systemPrompt string
 
-func handleChat(c *gin.Context) {
+func Chat(c *gin.Context) {
 	var req struct {
 		Data string `json:"data"`
 	}

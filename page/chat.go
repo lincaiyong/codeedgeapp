@@ -1,4 +1,4 @@
-package codeedgeapp
+package page
 
 import . "github.com/lincaiyong/gui"
 
