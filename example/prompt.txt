@@ -1,0 +1,8 @@
+<system>
+
+<tool use>
+You can access "read" tool to read file if you need.
+Tool use format: <tool name="read">/path/to/read</tool>.`
+</tool use>
+
+</system>

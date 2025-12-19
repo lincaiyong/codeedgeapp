@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/log"
@@ -8,6 +9,9 @@ import (
 	"net/http"
 	"os"
 )
+
+//go:embed prompt.txt
+var systemPrompt string
 
 func handleChat(c *gin.Context) {
 	var req struct {
@@ -27,7 +31,8 @@ func handleChat(c *gin.Context) {
 	c.Header("Connection", "keep-alive")
 
 	monica.Init(os.Getenv("MONICA_SESSION_ID"))
-	_, err = monica.ChatCompletion(c.Request.Context(), monica.ModelGPT41Mini, req.Data, func(s string) {
+	q := fmt.Sprintf("%s\n\n%s", systemPrompt, req.Data)
+	_, err = monica.ChatCompletion(c.Request.Context(), monica.ModelClaude4Sonnet, q, func(s string) {
 		fmt.Print(s)
 		_, _ = fmt.Fprintf(c.Writer, "data: %s\n\n", s)
 		c.Writer.Flush()
