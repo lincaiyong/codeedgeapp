@@ -1,24 +1,11 @@
 package main
 
-import (
-	"github.com/gin-gonic/gin"
-	"github.com/lincaiyong/arg"
-	"github.com/lincaiyong/codeedgeapp"
-)
+import "github.com/lincaiyong/codeedgeapp"
 
 func main() {
-	arg.Parse()
-	download := arg.KeyValueArg("download", "")
-	if download != "" {
-		Download(download)
-		return
+	data := map[string]string{
+		"demo": "https://bytedance.larkoffice.com/base/RB31bsA7Pa3f5JsKDlhcoTYdnue?table=tblxbNmiqJl67Egt&view=vewQotpDmR",
 	}
-	codeedgeapp.Run(func(r *gin.RouterGroup) {
-		r.GET("/files/", handleFiles)
-		r.GET("/file/*filepath", handleFile)
-		r.GET("/search/", handleSearch)
-		r.POST("/chat/", handleChat)
-		r.POST("/note/", handleSaveNote)
-		r.GET("/data/", handleData)
-	})
+	samplesRepo := "github.com/lincaiyong/samples"
+	codeedgeapp.Run(data, samplesRepo)
 }
