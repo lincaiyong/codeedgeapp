@@ -13,11 +13,13 @@ func main() {
 		AppSecret: os.Getenv("LARK_APP_SECRET"),
 		DataUrl: map[string]string{
 			"demo": "https://bytedance.larkoffice.com/base/RB31bsA7Pa3f5JsKDlhcoTYdnue?table=tblxbNmiqJl67Egt&view=vewQotpDmR",
+			"idor": "https://bytedance.larkoffice.com/base/P8QubLDkzabEJNsaNbacfha0nCd?table=tblUgfvHyAmuS3zx&view=vewDbnetVe",
 		},
 		DataFields: map[string][]string{
 			"demo": {"sop"},
+			"idor": {"sop", "version"},
 		},
-		SshRepoUrl: "git@github.com:lincaiyong/samples",
+		SshRepoUrl: "git@code.byted.org:lincaiyong/samples",
 		ChatFn:     monica.ChatCompletion,
 		ResetCache: false,
 	}

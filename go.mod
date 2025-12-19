@@ -7,6 +7,7 @@ replace github.com/lincaiyong/gui v1.0.12 => ../gui
 require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/lincaiyong/daemon v1.0.33
+	github.com/lincaiyong/editdistance v1.0.12
 	github.com/lincaiyong/gui v1.0.12
 	github.com/lincaiyong/larkbase v1.0.31
 	github.com/lincaiyong/log v1.0.4

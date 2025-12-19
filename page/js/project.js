@@ -10,7 +10,7 @@ function project_locateItem() {
     tree_locate(g.root.treeEle, g.root.currentFilePath);
 }
 
-function project_openFile(filePath, lineNumber, selection) {
+function project_openFile({filePath, lineNumber, selection, patch}) {
     g.root.currentFilePath = filePath;
     let project = g.root.project;
     let relPath = filePath;
@@ -19,13 +19,11 @@ function project_openFile(filePath, lineNumber, selection) {
         project = items[1];
         relPath = items.slice(2).join('/');
     }
-    g.fetch(`./file/${relPath}?project=${project}`).then(res => {
-        if (res.startsWith('diff:')) {
-            res = res.substring(5);
-            const data = JSON.parse(res);
+    g.fetch(`./file/${relPath}?project=${project}&patch=${encodeURIComponent(patch)}`).then(res => {
+        if (res instanceof Array) {
             g.root.showCompare = true;
-            g.root.compareEle.lhs = data[0];
-            g.root.compareEle.rhs = data[1];
+            g.root.compareEle.lhs = res[0];
+            g.root.compareEle.rhs = res[1];
         } else {
             g.root.showCompare = false;
             g.root.currentFileContent = res;
@@ -50,7 +48,7 @@ function project_clickItem(itemEle) {
     console.log('click: ' + JSON.stringify(itemEle.data));
     if (itemEle.data.leaf) {
         const filePath = itemEle.data.key;
-        project_openFile(filePath);
+        project_openFile({filePath});
     }
 }
 
@@ -102,7 +100,11 @@ function search_doSearch() {
 function search_clickItem(ele) {
     if (ele.data.leaf) {
         const {path, line_number, match_index} = g.root.searchResultMap[ele.data.key];
-        project_openFile(path, line_number, [line_number, match_index[0] + 1, line_number, match_index[1] + 1]);
+        project_openFile({
+            path,
+            line_number,
+            selection: [line_number, match_index[0] + 1, line_number, match_index[1] + 1]
+        });
     }
 }
 

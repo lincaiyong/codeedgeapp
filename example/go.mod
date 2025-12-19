@@ -33,6 +33,7 @@ require (
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/lincaiyong/arg v1.0.3 // indirect
 	github.com/lincaiyong/daemon v1.0.33 // indirect
+	github.com/lincaiyong/editdistance v1.0.12 // indirect
 	github.com/lincaiyong/gui v1.0.12 // indirect
 	github.com/lincaiyong/larkbase v1.0.31 // indirect
 	github.com/lincaiyong/log v1.0.4 // indirect
