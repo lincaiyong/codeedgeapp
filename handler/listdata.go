@@ -7,7 +7,7 @@ import (
 
 func ListData(c *gin.Context) {
 	var result []string
-	for k := range config.DataUrl {
+	for k := range conf.DataUrl {
 		result = append(result, k)
 	}
 	sort.Strings(result)

@@ -9,12 +9,12 @@ var requiredFields = []string{"project", "vendor", "note"}
 
 func Data(c *gin.Context) {
 	name := c.Param("name")
-	url := config.DataUrl[name]
+	url := conf.DataUrl[name]
 	if url == "" {
 		errorResponse(c, "data not found: %s", name)
 		return
 	}
-	conn, err := larkbase.ConnectAny(c.Request.Context(), config.AppId, config.AppSecret, url)
+	conn, err := larkbase.ConnectAny(c.Request.Context(), conf.AppId, conf.AppSecret, url)
 	if err != nil {
 		errorResponse(c, "fail to connect: %v", err)
 		return
@@ -33,7 +33,7 @@ func Data(c *gin.Context) {
 		for _, field := range requiredFields {
 			item[field] = record.Data[field]
 		}
-		for _, field := range config.DataFields[name] {
+		for _, field := range conf.DataFields[name] {
 			item[field] = record.Data[field]
 		}
 		result = append(result, item)

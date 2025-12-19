@@ -1,6 +1,7 @@
 package codeedgeapp
 
 import (
+	"codeedgeapp/config"
 	"codeedgeapp/handler"
 	"codeedgeapp/page"
 	_ "embed"
@@ -11,8 +12,8 @@ import (
 	"os"
 )
 
-func Run(data map[string]string, samplesRepo string) {
-	handler.Init(data, samplesRepo)
+func Run(conf config.Config) {
+	handler.Init(conf)
 	common.StartServer(
 		"codeedgeapp",
 		"v1.0.1",

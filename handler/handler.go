@@ -1,15 +1,9 @@
 package handler
 
-var config Config
+import "codeedgeapp/config"
 
-type Config struct {
-	AppId       string
-	AppSecret   string
-	DataUrl     map[string]string
-	DataFields  map[string][]string
-	SamplesRepo string
-}
+var conf config.Config
 
-func Init(conf Config) {
-	config = conf
+func Init(conf_ config.Config) {
+	conf = conf_
 }
