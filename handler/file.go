@@ -35,7 +35,7 @@ func File(c *gin.Context) {
 			return
 		}
 		result = string(b)
-	} else if rhs == "" {
+	} else if patch != "" {
 		b, err := cache.ReadFile(project, filePath)
 		if err != nil {
 			errorResponse(c, "fail to read file: %v", err)
