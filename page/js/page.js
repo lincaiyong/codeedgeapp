@@ -49,6 +49,9 @@ function root_onUpdated(ele, k, v) {
             }, 2000);
         }
     }
+    if (k === 'id') {
+        window.document.title = `CodeEdge App ${v}`;
+    }
 }
 
 function root_showWarn(msg) {
