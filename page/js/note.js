@@ -29,7 +29,7 @@ function note_onOpenLink(filePath, lineNumber, patch, rhs, cmd, arg) {
         switch (cmd) {
             case 'compare':
                 g.fetch(`./diff/?lhs=${g.root.project}&rhs=${arg}`).then(resp => {
-                    editor_appendValue(g.root.noteEle.editorEle, '\n' + resp.map(t => `@${t}:${arg}`).join('\n'));
+                    editor_appendValue(g.root.noteEle.editorEle, '\n' + resp.map(t => `@${t}:(${arg})`).join('\n'));
                 }).catch(err => {
                     console.error(err);
                 });

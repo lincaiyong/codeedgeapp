@@ -61,14 +61,14 @@ function editor_onCursorChange(lineNo, charNo) {
 }
 
 function editor_copyPath() {
-    let v;
-    if (g.root.currentPatch) {
-        v = `---+++ ${g.root.currentFilePath}\n${g.root.currentPatch}\n---+++\n`;
-    } else {
-        v = `@${g.root.currentFilePath}:${g.root.editorEle.currentLine}`;
-    }
+    let v = `@${g.root.currentFilePath}:${g.root.editorEle.currentLine}`;
     navigator.clipboard.writeText(v);
-    // editor_appendValue(g.root.noteEle.editorEle, `\n${v}`);
+}
+
+
+function editor_copyDiff() {
+    let v = `---+++ ${g.root.currentFilePath}\n${g.root.currentPatch}\n---+++\n`;
+    navigator.clipboard.writeText(v);
 }
 
 function editor_addBookmark() {
