@@ -59,6 +59,7 @@ func Handle(c *gin.Context) {
 	root.SetProperty("message", "''")
 	root.SetProperty("data", "{}")
 	root.SetProperty("currentPatch", "''")
+	root.SetProperty("admin", "false")
 	dataSource := c.Query("data")
 	if dataSource == "" {
 		dataSource = "demo"

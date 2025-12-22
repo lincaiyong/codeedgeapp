@@ -3,7 +3,7 @@ package page
 import . "github.com/lincaiyong/gui"
 
 func ChatView() *Element {
-	return Div(NewOpt().V("root.rightView === 'chat'"),
+	return Div(NewOpt().V("root.rightView === 'chat' && root.admin"),
 		Div(NewOpt().H("33").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235),
 			Text(NewOpt().X("10").Y("parent.h/2-.h/2").H("20").FontWeight("500"), "'Chat'"),
 			Button(NewButtonOpt().X("next.x-parent.h+.y").Y("next.y").Svg(SvgDelete).OnClick("() => g.root.chatEle.outputEle.value = ''")),

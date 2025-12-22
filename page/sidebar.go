@@ -22,7 +22,7 @@ func LeftBar(opt *Opt) *Element {
 func RightBar(opt *Opt) *Element {
 	return Div(opt,
 		ToolButton(NewButtonOpt().Svg(SvgChangedFile).X("parent.w/2-.w/2-0.5").Y(".x").Flag("false").Selected("root.rightView == 'note'").OnClick("sidebar_onClickNote")),
-		ToolButton(NewButtonOpt().Svg(SvgAIChat).X("prev.x").Y("prev.y2 + 8").Selected("root.rightView == 'chat'").OnClick("sidebar_onClickChat")),
+		ToolButton(NewButtonOpt().Svg(SvgAIChat).V("root.admin").X("prev.x").Y("prev.y2 + 8").Selected("root.rightView == 'chat'").OnClick("sidebar_onClickChat")),
 		//ToolButton(NewButtonOpt().Svg(SvgDatabase).X("prev.x").Y("prev.y2 + 8")),
 		//ToolButton(NewButtonOpt().Svg(SvgBookMarks).X("prev.x").Y("prev.y2 + 8").Selected("root.rightView === 'bookmark'").OnClick("sidebar_clickBookmark")),
 	)
