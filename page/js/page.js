@@ -17,13 +17,14 @@ function root_onCreated() {
         }).catch(e => {
             console.error(e);
         }), 1000);
+
+        document.addEventListener('keydown', function (e) {
+            if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+                e.preventDefault();
+                note_onSave();
+            }
+        });
     }
-    document.addEventListener('keydown', function (e) {
-        if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-            e.preventDefault();
-            note_onSave();
-        }
-    });
     document.addEventListener('keydown', function (e) {
         if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
             e.preventDefault();
