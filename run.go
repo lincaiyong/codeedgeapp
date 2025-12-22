@@ -26,6 +26,7 @@ func Run(conf handler.Config, admin bool) {
 			r.POST("/note/", handler.SaveNote)
 			r.GET("/data/list/", handler.ListData)
 			r.GET("/data/:name/", handler.Data)
+			r.GET("/object/:sha1/", handler.GetObject)
 			r.GET("/status/", handler.Status)
 			return nil
 		},

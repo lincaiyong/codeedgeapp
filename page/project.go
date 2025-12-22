@@ -30,7 +30,7 @@ func ProjectView() *Element {
 			Div(NewOpt().H("33").BorderBottom(1).BorderColor(ColorGray235).BgColor(ColorGray247),
 				Button(NewButtonOpt().X("10").Y("parent.h/2-.h/2").Svg(SvgCopy).OnClick("editor_copyPath").V("root.currentFilePath !== ''")),
 				Button(NewButtonOpt().X("prev.x2").Y("prev.y").W(".v ? prev.w : 0").Svg(SvgDiffWithClipboard).OnClick("editor_copyDiff").V("root.currentFilePath && root.currentPatch")),
-				EllipsisText(NewOpt().X("prev.x2").H("20").Y("parent.h/2-.h/2"), "root.currentFilePath"),
+				EllipsisText(NewOpt().X("prev.x2").H("20").Y("parent.h/2-.h/2"), "tree_itemName(root.currentFilePath)"),
 			),
 			Div(NewOpt().Y("prev.y2").H("parent.h-.y"),
 				Named("editor", Editor(NewEditorOpt().V("!root.showCompare").OnCursorPositionChange("editor_onCursorChange").

@@ -8,5 +8,5 @@ var conf Config
 
 func Init(conf_ Config) {
 	conf = conf_
-	cache.Init(conf.SshRepoUrl, conf.ResetCache)
+	cache.Init(conf.SamplesUrl, conf.ResetCache)
 }

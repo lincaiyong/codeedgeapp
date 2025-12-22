@@ -89,9 +89,13 @@ async function root_openProject(project, vendor) {
     let files = await root_fetchProjectFiles(project);
     if (vendor) {
         for (const v of vendor.split(',')) {
-            let vendorFiles = await root_fetchProjectFiles(v);
-            vendorFiles = vendorFiles.map(f => `@vendor/${v.replaceAll('/', '%2f')}/${f}`);
-            files = files.concat(vendorFiles);
+            if (v.endsWith('}')) {
+                files.push(`@vendor/${v}`);
+            } else {
+                let vendorFiles = await root_fetchProjectFiles(v);
+                vendorFiles = vendorFiles.map(f => `@vendor/${v.replaceAll('/', '%2f')}/${f}`);
+                files = files.concat(vendorFiles);
+            }
         }
     }
     g.root.projectFiles = files;

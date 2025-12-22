@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"github.com/lincaiyong/codeedgeapp"
 	"github.com/lincaiyong/codeedgeapp/handler"
 	"github.com/lincaiyong/uniapi/service/monica"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -19,8 +22,14 @@ func main() {
 			"demo": {"sop"},
 			"idor": {"sop", "version", "safe_code", "aime-fmt", "kimi-fmt", "code-fmt", "patcheval", "current"},
 		},
-		SshRepoUrl: "git@github.com:lincaiyong/samples",
+		SamplesUrl: "git@github.com:lincaiyong/samples",
 		ChatFn:     monica.ChatCompletion,
+		ObjectFn: func(ctx context.Context, hash string) ([]byte, error) {
+			if strings.Contains(hash, ".") {
+				return nil, errors.New("not found")
+			}
+			return os.ReadFile("objects/" + hash)
+		},
 		ResetCache: false,
 	}
 	monica.Init(os.Getenv("MONICA_SESSION_ID"))
