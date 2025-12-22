@@ -7,11 +7,17 @@ replace github.com/lincaiyong/codeedgeapp v1.0.1 => ..
 replace github.com/lincaiyong/gui v1.0.12 => ../../gui
 
 require (
+	code.byted.org/lincaiyong/devbox/api v1.0.9
 	github.com/lincaiyong/codeedgeapp v1.0.1
 	github.com/lincaiyong/uniapi v1.0.19
 )
 
 require (
+	code.byted.org/bytedtrace/interface-go v1.0.20 // indirect
+	code.byted.org/gopkg/consul v1.2.9 // indirect
+	code.byted.org/gopkg/env v1.7.4 // indirect
+	code.byted.org/gopkg/net2 v1.5.1 // indirect
+	code.byted.org/gopkg/tos v1.6.2 // indirect
 	github.com/bytedance/gopkg v0.1.3 // indirect
 	github.com/bytedance/sonic v1.14.2 // indirect
 	github.com/bytedance/sonic/loader v0.4.0 // indirect
@@ -43,14 +49,18 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.57.1 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.3.1 // indirect
+	github.com/volcengine/ve-tos-golang-sdk/v2 v2.7.20 // indirect
 	golang.org/x/arch v0.23.0 // indirect
 	golang.org/x/crypto v0.46.0 // indirect
 	golang.org/x/net v0.48.0 // indirect
+	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect

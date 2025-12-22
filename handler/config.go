@@ -3,7 +3,7 @@ package handler
 import "context"
 
 type ChatFn func(ctx context.Context, model, q string, f func(string)) (string, error)
-type ObjectFn func(ctx context.Context, path string) ([]byte, error)
+type ObjectFn func(ctx context.Context, key string) ([]byte, error)
 
 type Config struct {
 	AppId      string

@@ -24,6 +24,19 @@ function root_onCreated() {
                 note_onSave();
             }
         });
+
+        document.addEventListener('keydown', function (e) {
+            if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'x') {
+                e.preventDefault();
+                if (g.root.currentFilePath) {
+                    const editor = g.root.editorEle?._editor;
+                    if (editor) {
+                        const selectedText = editor.getModel().getValueInRange(editor.getSelection());
+                        editor_appendValue(g.root.noteEle.editorEle, `\n${selectedText}@${g.root.currentFilePath}:${g.root.editorEle.currentLine}`);
+                    }
+                }
+            }
+        });
     }
     document.addEventListener('keydown', function (e) {
         if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
