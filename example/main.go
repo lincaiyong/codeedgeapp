@@ -17,12 +17,12 @@ func main() {
 		},
 		DataFields: map[string][]string{
 			"demo": {"sop"},
-			"idor": {"sop", "version"},
+			"idor": {"sop", "version", "safe_code", "aime-fmt", "kimi-fmt", "code-fmt", "patcheval", "current"},
 		},
-		SshRepoUrl: "git@code.byted.org:lincaiyong/samples",
+		SshRepoUrl: "git@github.com:lincaiyong/samples",
 		ChatFn:     monica.ChatCompletion,
 		ResetCache: false,
 	}
 	monica.Init(os.Getenv("MONICA_SESSION_ID"))
-	codeedgeapp.Run(conf)
+	codeedgeapp.Run(conf, true)
 }

@@ -6,17 +6,18 @@ function root_onCreated() {
         g.root.bottomView = 'data';
         data_onRefresh(g.root.dataEle);
     });
-    let serverPid = 0;
-    setInterval(() => g.fetch('./status/').then(resp => {
-        const {pid} = resp || {};
-        if (serverPid && pid && pid !== serverPid) {
-            location.reload();
-        }
-        serverPid = pid;
-    }).catch(e => {
-        console.error(e);
-    }), 1000);
-
+    if (g.root.admin) {
+        let serverPid = 0;
+        setInterval(() => g.fetch('./status/').then(resp => {
+            const {pid} = resp || {};
+            if (serverPid && pid && pid !== serverPid) {
+                location.reload();
+            }
+            serverPid = pid;
+        }).catch(e => {
+            console.error(e);
+        }), 1000);
+    }
     document.addEventListener('keydown', function (e) {
         if ((e.metaKey || e.ctrlKey) && e.key === 's') {
             e.preventDefault();

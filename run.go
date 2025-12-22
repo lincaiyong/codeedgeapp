@@ -9,7 +9,7 @@ import (
 	. "github.com/lincaiyong/gui"
 )
 
-func Run(conf handler.Config) {
+func Run(conf handler.Config, admin bool) {
 	handler.Init(conf)
 	common.StartServer(
 		"codeedgeapp",
