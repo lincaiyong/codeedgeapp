@@ -5,6 +5,7 @@ import (
 	"github.com/lincaiyong/gui"
 	"github.com/lincaiyong/larkbase"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -17,13 +18,21 @@ func Data(c *gin.Context) {
 		errorResponse(c, "data not found: %s", name)
 		return
 	}
+	var view string
+	if idx := strings.Index(url, "&view="); idx == -1 {
+		errorResponse(c, "invalid data url: view is required")
+		return
+	} else {
+		view = url[idx+len("&view="):]
+	}
+
 	conn, err := larkbase.ConnectAny(c.Request.Context(), conf.AppId, conf.AppSecret, url)
 	if err != nil {
 		errorResponse(c, "fail to connect: %v", err)
 		return
 	}
 	var records []*larkbase.AnyRecord
-	err = conn.FindAll(&records, nil)
+	err = conn.FindAll(&records, larkbase.NewViewIdFindOption(view))
 	if err != nil {
 		errorResponse(c, "fail to query: %v", err)
 		return
