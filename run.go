@@ -17,7 +17,7 @@ func Run(conf handler.Config, admin bool) {
 		"",
 		func(envs []string, r *gin.RouterGroup) error {
 			r.GET("/res/*filepath", HandleRes())
-			r.GET("/", page.Handle)
+			r.GET("/", page.Handle(admin))
 			r.GET("/files/", handler.Files)
 			r.GET("/diff/", handler.Diff)
 			r.GET("/file/*filepath", handler.File)
