@@ -26,7 +26,7 @@ function root_onCreated() {
         });
 
         document.addEventListener('keydown', function (e) {
-            if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'x' || e.key === 'c')) {
+            if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'x' || e.key === 'd')) {
                 e.preventDefault();
                 if (g.root.currentFilePath) {
                     const editor = g.root.editorEle?._editor;
