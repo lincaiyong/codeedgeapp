@@ -26,13 +26,18 @@ function root_onCreated() {
         });
 
         document.addEventListener('keydown', function (e) {
-            if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'x') {
+            if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'x' || e.key === 'c')) {
                 e.preventDefault();
                 if (g.root.currentFilePath) {
                     const editor = g.root.editorEle?._editor;
                     if (editor) {
                         const selectedText = editor.getModel().getValueInRange(editor.getSelection());
-                        editor_appendValue(g.root.noteEle.editorEle, `\n${selectedText}@${g.root.currentFilePath}:${g.root.editorEle.currentLine}`);
+                        const v = `${selectedText}@${g.root.currentFilePath}:${g.root.editorEle.currentLine}`;
+                        if (e.key === 'x') {
+                            editor_appendValue(g.root.noteEle.editorEle, `\n${v}`);
+                        } else {
+                            navigator.clipboard.writeText(v);
+                        }
                     }
                 }
             }
