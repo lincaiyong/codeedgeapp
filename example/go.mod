@@ -40,7 +40,7 @@ require (
 	github.com/lincaiyong/arg v1.0.3 // indirect
 	github.com/lincaiyong/daemon v1.0.33 // indirect
 	github.com/lincaiyong/editdistance v1.0.12 // indirect
-	github.com/lincaiyong/gui v1.0.17 // indirect
+	github.com/lincaiyong/gui v1.0.18 // indirect
 	github.com/lincaiyong/larkbase v1.0.31 // indirect
 	github.com/lincaiyong/log v1.0.4 // indirect
 	github.com/lincaiyong/processlock v1.0.1 // indirect

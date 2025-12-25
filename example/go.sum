@@ -108,6 +108,7 @@ github.com/lincaiyong/editdistance v1.0.12 h1:mlnDIUXC/mLahTTFBCnJ94rpCPSbskIVQF
 github.com/lincaiyong/editdistance v1.0.12/go.mod h1:0R1UlVIgXjka99d2pUvOpB2sLZr2LvMOKiRwthgykA8=
 github.com/lincaiyong/gui v1.0.17 h1:92wPdJ3XhaLWvVtWeeaNqiNhs5D5/xR45CXKVH6ZmbY=
 github.com/lincaiyong/gui v1.0.17/go.mod h1:+LsKLweDrQN9+z6WoZgp9Z+1wh9Ha3Cj3JIbt0Fmzws=
+github.com/lincaiyong/gui v1.0.18/go.mod h1:+LsKLweDrQN9+z6WoZgp9Z+1wh9Ha3Cj3JIbt0Fmzws=
 github.com/lincaiyong/larkbase v1.0.31 h1:bf0dzu9d24H7tASQ9pTCJNNBJtMf+jpWysl3gIjPbFE=
 github.com/lincaiyong/larkbase v1.0.31/go.mod h1:EdMPQE68mzqOnEya1ElJsDnn/tj7slXzf+dcq6ru8+8=
 github.com/lincaiyong/log v1.0.4 h1:CGqedLp3bX3CmyJZ9gucNnZOWgItBkp9zVlWDkdRF9k=

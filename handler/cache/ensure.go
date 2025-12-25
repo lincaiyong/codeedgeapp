@@ -8,6 +8,7 @@ import (
 )
 
 func EnsureProjectDir(project string) (string, error) {
+	deleteEmptyDirectory(context.Background())
 	dir := filepath.Join(cacheDir, project)
 	if stat, err := os.Stat(dir); err == nil && stat.IsDir() {
 		return dir, nil
