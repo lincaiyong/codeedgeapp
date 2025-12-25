@@ -33,9 +33,11 @@ async function search_doSearch() {
     let resp = await search_doSearchProject(text, flags, g.root.project);
     if (g.root.vendor) {
         for (const v of g.root.vendor.split(',')) {
-            const tmp = await search_doSearchProject(text, flags, v);
-            tmp.forEach(t => t.path = `@vendor/${v.replaceAll('/', '%2f')}/${t.path}`);
-            resp = resp.concat(tmp);
+            if (!v.endsWith('}')) {
+                const tmp = await search_doSearchProject(text, flags, v);
+                tmp.forEach(t => t.path = `@vendor/${v.replaceAll('/', '%2f')}/${t.path}`);
+                resp = resp.concat(tmp);
+            }
         }
     }
     const results = [];
